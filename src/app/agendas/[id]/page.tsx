@@ -4,6 +4,8 @@ import { format } from "date-fns";
 import { AgendaForm } from "@/components/AgendaForm";
 import { prisma } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 type PageProps = {
   params: Promise<{ id: string }>;
 };

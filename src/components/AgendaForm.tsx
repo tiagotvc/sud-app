@@ -71,8 +71,8 @@ export function AgendaForm({ initialData, mode }: AgendaFormProps) {
         throw new Error(payload.error ?? "Erro ao salvar agenda");
       }
 
-      router.push("/");
       router.refresh();
+      router.push("/");
     } catch (submitError) {
       setError(
         submitError instanceof Error ? submitError.message : "Erro ao salvar agenda",

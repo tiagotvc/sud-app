@@ -5,6 +5,7 @@ import {
   syncMasterData,
 } from "@/lib/agenda-service";
 import { prisma } from "@/lib/db";
+import { revalidateAgendaPages } from "@/lib/revalidate-agenda";
 import { AgendaInput } from "@/lib/types";
 
 export async function GET() {
@@ -38,6 +39,8 @@ export async function POST(request: NextRequest) {
       chamados: { orderBy: { ordem: "asc" } },
     },
   });
+
+  revalidateAgendaPages(agenda.id);
 
   return NextResponse.json(agenda, { status: 201 });
 }

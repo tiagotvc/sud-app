@@ -5,6 +5,7 @@ import {
   syncMasterData,
 } from "@/lib/agenda-service";
 import { prisma } from "@/lib/db";
+import { revalidateAgendaPages } from "@/lib/revalidate-agenda";
 import { AgendaInput } from "@/lib/types";
 
 type RouteParams = { params: Promise<{ id: string }> };
@@ -58,6 +59,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     });
   });
 
+  revalidateAgendaPages(id);
+
   return NextResponse.json(agenda);
 }
 
@@ -70,6 +73,8 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams) {
   }
 
   await prisma.agenda.delete({ where: { id } });
+
+  revalidateAgendaPages();
 
   return NextResponse.json({ success: true });
 }
