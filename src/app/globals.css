@@ -1,8 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f1f5f9;
+  --background: #eef2f7;
   --foreground: #0f172a;
+  --primary: #1e4d8c;
+  --primary-dark: #1e3a5f;
+  --hymn-bg: #eef2ff;
+  --hymn-border: #c7d2fe;
+  --hymn-text: #312e81;
 }
 
 @theme inline {
@@ -18,12 +23,60 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
-.prose ul {
+.field-label {
+  @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-600;
+}
+
+.field-input {
+  @apply rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition-all placeholder:text-slate-400 focus:border-[#1e4d8c] focus:ring-2 focus:ring-blue-100;
+}
+
+.hymn-label {
+  @apply text-indigo-700;
+}
+
+.hymn-input {
+  border-color: var(--hymn-border);
+  background: linear-gradient(to bottom, #fafafe, var(--hymn-bg));
+  color: var(--hymn-text);
+  font-weight: 500;
+}
+
+.hymn-input:focus {
+  border-color: #818cf8;
+  --tw-ring-color: rgb(199 210 254);
+}
+
+.hymn-input::placeholder {
+  color: #a5b4fc;
+}
+
+.announcements-editor ul {
   list-style: disc;
   padding-left: 1.25rem;
 }
 
-.prose ol {
+.announcements-editor ol {
   list-style: decimal;
   padding-left: 1.25rem;
+}
+
+.announcements-editor p {
+  margin: 0.25rem 0;
+}
+
+.page-shell {
+  @apply min-h-screen w-full px-4 py-8 sm:px-6 lg:px-10;
+}
+
+.btn-primary {
+  @apply rounded-lg bg-gradient-to-r from-[#1e4d8c] to-[#2563a8] px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:from-[#1e3a5f] hover:to-[#1e4d8c] hover:shadow-lg disabled:opacity-60;
+}
+
+.btn-secondary {
+  @apply rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50;
+}
+
+.agenda-paper {
+  @apply space-y-6 rounded-2xl border border-slate-200/80 bg-white/80 p-4 shadow-xl ring-1 ring-slate-100 backdrop-blur-sm md:p-6;
 }

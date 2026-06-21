@@ -2,6 +2,7 @@
   "name": "sud-app",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.12.1",
   "scripts": {
     "dev": "next dev",
     "dev:clean": "powershell -Command \"foreach ($port in 3000,3001) { Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue } }; if (Test-Path '.next/dev') { Remove-Item -Recurse -Force '.next/dev' }\" && next dev",
@@ -15,6 +16,8 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
+    "@tiptap/extension-color": "^3.27.1",
+    "@tiptap/extension-text-style": "^3.27.1",
     "@tiptap/pm": "^3.27.1",
     "@tiptap/react": "^3.27.1",
     "@tiptap/starter-kit": "^3.27.1",

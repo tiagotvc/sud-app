@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "SUD App · Agendas Sacramentais",
-  description: "Registro de atas de reunião sacramental para o Bispado",
+  description: "Registro de agendas de reunião sacramental para o Bispado",
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full bg-slate-100 text-slate-900">{children}</body>
+      <body className="min-h-full bg-[#eef2f7] text-slate-900">{children}</body>
     </html>
   );
 }

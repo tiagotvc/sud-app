@@ -24,30 +24,27 @@ export function ChamadosEditor({ value, onChange }: ChamadosEditorProps) {
   }
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-700">
-          Chamados, apoios, desobrigações, votos de plena aceitação
-        </h3>
+    <div className="space-y-4">
+      <div className="flex items-center justify-end">
         <button
           type="button"
           onClick={addItem}
-          className="rounded-md bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-200"
+          className="rounded-lg bg-violet-100 px-3.5 py-1.5 text-xs font-semibold text-violet-800 transition-colors hover:bg-violet-200"
         >
-          + Adicionar
+          + Adicionar chamado
         </button>
       </div>
 
       {value.length === 0 && (
-        <p className="rounded-md border border-dashed border-slate-300 px-3 py-4 text-sm text-slate-500">
-          Nenhum chamado registrado. Clique em &quot;Adicionar&quot; para incluir.
+        <p className="rounded-lg border border-dashed border-violet-200 bg-violet-50/50 px-4 py-6 text-center text-sm text-violet-700/70">
+          Nenhum chamado registrado. Clique em &quot;Adicionar chamado&quot; para incluir.
         </p>
       )}
 
       {value.map((item, index) => (
         <div
           key={index}
-          className="grid gap-3 rounded-md border border-slate-200 bg-slate-50 p-3 md:grid-cols-[1fr_1fr_auto]"
+          className="grid gap-3 rounded-xl border border-violet-100 bg-gradient-to-br from-violet-50/80 to-white p-4 md:grid-cols-[1fr_1fr_auto]"
         >
           <AutocompleteInput
             label="Pessoa"
@@ -55,6 +52,7 @@ export function ChamadosEditor({ value, onChange }: ChamadosEditorProps) {
             onChange={(nextValue) => updateItem(index, "pessoa", nextValue)}
             apiPath="/api/pessoas"
             placeholder="Nome da pessoa"
+            variant="person"
           />
           <AutocompleteInput
             label="Chamado"
@@ -67,7 +65,7 @@ export function ChamadosEditor({ value, onChange }: ChamadosEditorProps) {
             <button
               type="button"
               onClick={() => removeItem(index)}
-              className="rounded-md border border-red-200 px-3 py-2 text-xs font-medium text-red-700 hover:bg-red-50"
+              className="rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-medium text-red-700 transition-colors hover:bg-red-50"
             >
               Remover
             </button>

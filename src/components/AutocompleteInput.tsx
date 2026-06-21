@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+type FieldVariant = "default" | "hymn" | "person";
+
 interface AutocompleteInputProps {
   label: string;
   value: string;
@@ -9,7 +11,30 @@ interface AutocompleteInputProps {
   apiPath: "/api/pessoas" | "/api/hinos" | "/api/chamados";
   placeholder?: string;
   hint?: string;
+  variant?: FieldVariant;
 }
+
+const variantStyles: Record<
+  FieldVariant,
+  { input: string; label: string; suggestion: string; icon?: string }
+> = {
+  default: {
+    input: "field-input",
+    label: "field-label",
+    suggestion: "hover:bg-blue-50",
+  },
+  hymn: {
+    input: "field-input hymn-input",
+    label: "field-label hymn-label",
+    suggestion: "hover:bg-indigo-50 text-indigo-900",
+    icon: "♪",
+  },
+  person: {
+    input: "field-input",
+    label: "field-label",
+    suggestion: "hover:bg-blue-50",
+  },
+};
 
 export function AutocompleteInput({
   label,
@@ -18,11 +43,13 @@ export function AutocompleteInput({
   apiPath,
   placeholder,
   hint,
+  variant = "default",
 }: AutocompleteInputProps) {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const styles = variantStyles[variant];
 
   const fetchSuggestions = useCallback(
     async (query: string) => {
@@ -95,7 +122,14 @@ export function AutocompleteInput({
 
   return (
     <div ref={containerRef} className="relative">
-      <label className="mb-1 block text-sm font-medium text-slate-700">{label}</label>
+      <label className={styles.label}>
+        {variant === "hymn" && (
+          <span className="mr-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-indigo-100 text-xs text-indigo-700">
+            {styles.icon}
+          </span>
+        )}
+        {label}
+      </label>
       <input
         type="text"
         value={value}
@@ -106,12 +140,12 @@ export function AutocompleteInput({
           setTimeout(() => setOpen(false), 150);
         }}
         placeholder={placeholder}
-        className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+        className={`w-full ${styles.input}`}
       />
       {hint && <p className="mt-1 text-xs text-slate-500">{hint}</p>}
 
       {open && (suggestions.length > 0 || loading) && (
-        <ul className="absolute z-20 mt-1 max-h-48 w-full overflow-auto rounded-md border border-slate-200 bg-white py-1 shadow-lg">
+        <ul className="absolute z-20 mt-1 max-h-48 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 shadow-xl ring-1 ring-slate-100">
           {loading && (
             <li className="px-3 py-2 text-sm text-slate-500">Carregando...</li>
           )}
@@ -122,8 +156,11 @@ export function AutocompleteInput({
                   type="button"
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={() => handleSelect(option)}
-                  className="block w-full px-3 py-2 text-left text-sm text-slate-800 hover:bg-blue-50"
+                  className={`block w-full px-3 py-2 text-left text-sm text-slate-800 ${styles.suggestion}`}
                 >
+                  {variant === "hymn" && (
+                    <span className="mr-2 font-mono text-xs text-indigo-500">♪</span>
+                  )}
                   {option}
                 </button>
               </li>
