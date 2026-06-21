@@ -4,6 +4,7 @@ import {
   buildChamadosData,
   syncMasterData,
 } from "@/lib/agenda-service";
+import { requireBispado } from "@/lib/auth-guard";
 import { prisma } from "@/lib/db";
 import { revalidateAgendaPages } from "@/lib/revalidate-agenda";
 import { AgendaInput } from "@/lib/types";
@@ -11,6 +12,11 @@ import { AgendaInput } from "@/lib/types";
 type RouteParams = { params: Promise<{ id: string }> };
 
 export async function GET(_request: NextRequest, { params }: RouteParams) {
+  const authResult = await requireBispado();
+  if ("error" in authResult) {
+    return authResult.error;
+  }
+
   const { id } = await params;
 
   const agenda = await prisma.agenda.findUnique({
@@ -28,6 +34,11 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
+  const authResult = await requireBispado();
+  if ("error" in authResult) {
+    return authResult.error;
+  }
+
   const { id } = await params;
   const body = (await request.json()) as AgendaInput;
 
@@ -65,6 +76,11 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(_request: NextRequest, { params }: RouteParams) {
+  const authResult = await requireBispado();
+  if ("error" in authResult) {
+    return authResult.error;
+  }
+
   const { id } = await params;
 
   const existing = await prisma.agenda.findUnique({ where: { id } });

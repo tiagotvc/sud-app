@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireBispado } from "@/lib/auth-guard";
 import { prisma } from "@/lib/db";
 
 export async function GET(request: NextRequest) {
+  const authResult = await requireBispado();
+  if ("error" in authResult) {
+    return authResult.error;
+  }
   const q = request.nextUrl.searchParams.get("q")?.trim() ?? "";
 
   const pessoas = await prisma.pessoa.findMany({
@@ -16,6 +21,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const authResult = await requireBispado();
+  if ("error" in authResult) {
+    return authResult.error;
+  }
+
   const body = await request.json();
   const nome = typeof body.nome === "string" ? body.nome.trim() : "";
 

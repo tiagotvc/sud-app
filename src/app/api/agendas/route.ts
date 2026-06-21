@@ -4,11 +4,17 @@ import {
   buildChamadosData,
   syncMasterData,
 } from "@/lib/agenda-service";
+import { requireBispado } from "@/lib/auth-guard";
 import { prisma } from "@/lib/db";
 import { revalidateAgendaPages } from "@/lib/revalidate-agenda";
 import { AgendaInput } from "@/lib/types";
 
 export async function GET() {
+  const authResult = await requireBispado();
+  if ("error" in authResult) {
+    return authResult.error;
+  }
+
   const agendas = await prisma.agenda.findMany({
     orderBy: { data: "desc" },
     include: {
@@ -20,6 +26,11 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const authResult = await requireBispado();
+  if ("error" in authResult) {
+    return authResult.error;
+  }
+
   const body = (await request.json()) as AgendaInput;
 
   if (!body.data) {

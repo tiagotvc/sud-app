@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Providers } from "@/components/Providers";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,8 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SUD App · Agendas Sacramentais",
-  description: "Registro de agendas de reunião sacramental para o Bispado",
+  title: "Zion Connect · Ala Novo Hamburgo",
+  description:
+    "Plataforma interna de organização da Ala Novo Hamburgo. Ferramenta independente, sem afiliação oficial.",
 };
 
 export default function RootLayout({
@@ -24,7 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full bg-[#eef2f7] text-slate-900">{children}</body>
+      <body className="min-h-full bg-[#f7f8fb] text-slate-900">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

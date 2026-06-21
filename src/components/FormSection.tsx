@@ -84,15 +84,16 @@ export function AgendaHeader({
   editable = true,
 }: AgendaHeaderProps) {
   return (
-    <header className="overflow-hidden rounded-xl border border-blue-900/20 shadow-md">
-      <div className="bg-gradient-to-br from-[#1e4d8c] via-[#2563a8] to-[#1e3a5f] px-6 py-8 text-white">
+    <header className="overflow-hidden rounded-xl border border-[#c9a227]/20 shadow-lg">
+      <div className="relative bg-gradient-to-br from-[#0c1f3d] via-[#1a3a6b] to-[#0c1f3d] px-6 py-8 text-white">
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#c9a227] to-transparent" />
         <p className="text-center text-[10px] font-semibold uppercase tracking-[0.25em] text-blue-100/90">
           A Igreja de Jesus Cristo dos Santos dos Últimos Dias
         </p>
         <h2 className="mt-3 text-center text-3xl font-bold tracking-tight">
           Agenda Sacramental
         </h2>
-        <p className="mt-1 text-center text-sm font-medium text-blue-100">
+        <p className="mt-1 text-center text-sm font-medium text-[#c9a227]/90">
           Ala Novo Hamburgo
         </p>
       </div>

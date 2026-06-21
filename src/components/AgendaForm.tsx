@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { format } from "date-fns";
@@ -72,7 +73,7 @@ export function AgendaForm({ initialData, mode }: AgendaFormProps) {
       }
 
       router.refresh();
-      router.push("/");
+      router.push("/bispado/agendas-sacramentais");
     } catch (submitError) {
       setError(
         submitError instanceof Error ? submitError.message : "Erro ao salvar agenda",
@@ -244,13 +245,13 @@ export function AgendaForm({ initialData, mode }: AgendaFormProps) {
         </div>
       )}
 
-      <div className="flex flex-wrap gap-3 border-t border-slate-100 pt-2">
-        <button type="submit" disabled={saving} className="btn-primary">
+      <div className="crm-toolbar mt-2 border-t-0 bg-slate-50">
+        <button type="submit" disabled={saving} className="crm-btn-primary">
           {saving ? "Salvando..." : mode === "create" ? "Criar agenda" : "Salvar alterações"}
         </button>
-        <button type="button" onClick={() => router.push("/")} className="btn-secondary">
+        <Link href="/bispado/agendas-sacramentais" className="crm-btn">
           Cancelar
-        </button>
+        </Link>
       </div>
     </form>
   );

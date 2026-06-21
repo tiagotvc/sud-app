@@ -1,10 +1,11 @@
 import { revalidatePath } from "next/cache";
 
 export function revalidateAgendaPages(agendaId?: string) {
-  revalidatePath("/");
-  revalidatePath("/agendas/nova");
+  revalidatePath("/bispado");
+  revalidatePath("/bispado/agendas-sacramentais");
+  revalidatePath("/bispado/agendas-sacramentais/nova");
 
   if (agendaId) {
-    revalidatePath(`/agendas/${agendaId}`);
+    revalidatePath(`/bispado/agendas-sacramentais/${agendaId}`);
   }
 }

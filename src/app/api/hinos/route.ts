@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireBispado } from "@/lib/auth-guard";
 import { prisma } from "@/lib/db";
 import { formatHino, parseHino } from "@/lib/types";
 
 export async function GET(request: NextRequest) {
+  const authResult = await requireBispado();
+  if ("error" in authResult) {
+    return authResult.error;
+  }
+
   const q = request.nextUrl.searchParams.get("q")?.trim() ?? "";
 
   const hinos = await prisma.hino.findMany({
@@ -22,6 +28,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const authResult = await requireBispado();
+  if ("error" in authResult) {
+    return authResult.error;
+  }
+
   const body = await request.json();
   const value = typeof body.value === "string" ? body.value.trim() : "";
 
