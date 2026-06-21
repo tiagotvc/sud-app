@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Pessoa {
+  id        String   @id @default(cuid())
+  nome      String   @unique
+  createdAt DateTime @default(now())
+}
+
+model Hino {
+  id        String   @id @default(cuid())
+  numero    Int      @unique
+  nome      String
+  createdAt DateTime @default(now())
+}
+
+model Chamado {
+  id        String   @id @default(cuid())
+  titulo    String   @unique
+  createdAt DateTime @default(now())
+}
+
+model Agenda {
+  id                        String   @id @default(cuid())
+  data                      DateTime
+  frequencia                Int?
+  presididaPor              String?
+  dirigidaPor               String?
+  reconhecimentoAutoridades String?
+  reconhecimentoVisitantes  String?
+  anuncios                  String?
+  regente                   String?
+  organista                 String?
+  hinoAbertura              String?
+  primeiraOracao            String?
+  hinoSacramental           String?
+  primeiroOrador            String?
+  segundoOrador             String?
+  hinoEspecial              String?
+  ultimoOrador              String?
+  hinoEncerramento          String?
+  oracaoEncerramento        String?
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+
+  chamados AgendaChamado[]
+}
+
+model AgendaChamado {
+  id       String @id @default(cuid())
+  agendaId String
+  agenda   Agenda @relation(fields: [agendaId], references: [id], onDelete: Cascade)
+  pessoa   String
+  chamado  String
+  ordem    Int    @default(0)
+}
