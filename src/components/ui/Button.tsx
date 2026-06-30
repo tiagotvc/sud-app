@@ -10,8 +10,7 @@ const variants: Record<ButtonVariant, string> = {
   primary: "btn-primary",
   secondary: "btn-secondary",
   accent: "btn-accent",
-  ghost:
-    "rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900",
+  ghost: "crm-btn-ghost",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(

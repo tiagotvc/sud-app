@@ -22,8 +22,32 @@ function createPrismaClient() {
   return new PrismaClient({ adapter });
 }
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+/** Evita client em cache no hot reload sem os modelos novos do schema */
+function isPrismaClientReady(client: PrismaClient): boolean {
+  const c = client as PrismaClient & {
+    conteudoSemanal?: { findFirst?: unknown };
+    eventoCalendario?: { findMany?: unknown };
+    aviso?: { findMany?: unknown };
+    disponibilidadeEntrevista?: { findMany?: unknown };
+    reservaEntrevista?: { findMany?: unknown };
+  };
 
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
+  return (
+    typeof c.conteudoSemanal?.findFirst === "function" &&
+    typeof c.eventoCalendario?.findMany === "function" &&
+    typeof c.aviso?.findMany === "function" &&
+    typeof c.disponibilidadeEntrevista?.findMany === "function" &&
+    typeof c.reservaEntrevista?.findMany === "function"
+  );
 }
+
+let prismaInstance = globalForPrisma.prisma;
+
+if (!prismaInstance || !isPrismaClientReady(prismaInstance)) {
+  prismaInstance = createPrismaClient();
+  if (process.env.NODE_ENV !== "production") {
+    globalForPrisma.prisma = prismaInstance;
+  }
+}
+
+export const prisma = prismaInstance;

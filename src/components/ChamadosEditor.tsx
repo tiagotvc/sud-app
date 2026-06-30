@@ -29,14 +29,14 @@ export function ChamadosEditor({ value, onChange }: ChamadosEditorProps) {
         <button
           type="button"
           onClick={addItem}
-          className="rounded-lg bg-violet-100 px-3.5 py-1.5 text-xs font-semibold text-violet-800 transition-colors hover:bg-violet-200"
+          className="crm-btn-accent rounded px-3.5 py-1.5 text-xs font-semibold"
         >
           + Adicionar chamado
         </button>
       </div>
 
       {value.length === 0 && (
-        <p className="rounded-lg border border-dashed border-violet-200 bg-violet-50/50 px-4 py-6 text-center text-sm text-violet-700/70">
+        <p className="rounded-lg border border-dashed border-brand-border bg-brand-cream-warm px-4 py-6 text-center text-sm text-brand-text-muted">
           Nenhum chamado registrado. Clique em &quot;Adicionar chamado&quot; para incluir.
         </p>
       )}
@@ -44,7 +44,7 @@ export function ChamadosEditor({ value, onChange }: ChamadosEditorProps) {
       {value.map((item, index) => (
         <div
           key={index}
-          className="grid gap-3 rounded-xl border border-violet-100 bg-gradient-to-br from-violet-50/80 to-white p-4 md:grid-cols-[1fr_1fr_auto]"
+          className="grid gap-3 rounded-lg border border-brand-border bg-brand-cream-warm p-4 md:grid-cols-[1fr_1fr_auto]"
         >
           <AutocompleteInput
             label="Pessoa"

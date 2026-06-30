@@ -10,6 +10,19 @@ datasource db {
 enum UserRole {
   ADMIN
   BISPADO
+  CONSELHEIRO
+}
+
+enum TipoAviso {
+  AVISO
+  NOVIDADE
+  JORNAL
+  EVENTO
+}
+
+enum ModoEntrevista {
+  PRESENCIAL
+  ONLINE
 }
 
 model Usuario {
@@ -20,6 +33,9 @@ model Usuario {
   role         UserRole @default(ADMIN)
   ativo        Boolean  @default(true)
   createdAt    DateTime @default(now())
+
+  disponibilidadesEntrevista DisponibilidadeEntrevista[]
+  reservasEntrevista         ReservaEntrevista[]         @relation("EntrevistadorReservas")
 }
 
 model Pessoa {
@@ -74,4 +90,77 @@ model AgendaChamado {
   pessoa   String
   chamado  String
   ordem    Int    @default(0)
+}
+
+model Aviso {
+  id          String    @id @default(cuid())
+  titulo      String
+  conteudo    String
+  tipo        TipoAviso @default(AVISO)
+  publicado   Boolean   @default(false)
+  destaque    Boolean   @default(false)
+  linkExterno String?
+  publicadoEm DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model ConteudoSemanal {
+  id              String   @id @default(cuid())
+  semanaInicio    DateTime @unique
+  mensagemBispo   String?
+  hinoSemana      String?
+  versiculoTexto  String?
+  versiculoRef    String?
+  linkJornal      String?
+  tituloJornal    String?
+  ativo           Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model EventoCalendario {
+  id        String   @id @default(cuid())
+  diaSemana Int
+  titulo    String
+  horario   String?
+  descricao String?
+  ordem     Int      @default(0)
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([diaSemana, ordem])
+}
+
+model DisponibilidadeEntrevista {
+  id         String   @id @default(cuid())
+  usuarioId  String
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  diaSemana  Int
+  horaInicio String
+  horaFim    String
+  duracaoMin Int      @default(30)
+  ativo      Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([usuarioId, diaSemana])
+}
+
+model ReservaEntrevista {
+  id              String   @id @default(cuid())
+  entrevistadorId String
+  entrevistador   Usuario  @relation("EntrevistadorReservas", fields: [entrevistadorId], references: [id], onDelete: Cascade)
+  inicio          DateTime
+  fim             DateTime
+  nomeMembro      String
+  emailMembro     String?
+  telefoneMembro  String?
+  observacoes     String?
+  modoEntrevista  ModoEntrevista @default(PRESENCIAL)
+  createdAt       DateTime @default(now())
+
+  @@unique([entrevistadorId, inicio])
+  @@index([entrevistadorId, inicio])
 }

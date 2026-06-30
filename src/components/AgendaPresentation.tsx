@@ -31,39 +31,92 @@ interface AgendaPresentationProps {
   agenda: AgendaPresentationData;
 }
 
-function Field({ label, value }: { label: string; value: string | null | undefined }) {
-  if (!value?.trim()) return null;
+function parseHymn(value: string): { number: string; title: string } {
+  const trimmed = value.trim();
+  const match = trimmed.match(/^(\d+)\s*[-–—]?\s*(.+)$/);
+  if (match) {
+    return { number: match[1], title: match[2].trim() };
+  }
+  return { number: "", title: trimmed };
+}
+
+function Field({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | null | undefined;
+}) {
+  const hasValue = Boolean(value?.trim());
+
   return (
-    <div className="presentation-field">
+    <div className={`presentation-field ${!hasValue ? "presentation-field-empty" : ""}`}>
       <dt className="presentation-label">{label}</dt>
-      <dd className="presentation-value">{value}</dd>
+      <dd className={hasValue ? "presentation-value-name" : "presentation-value-empty"}>
+        {hasValue ? value : "—"}
+      </dd>
     </div>
   );
 }
 
-function HymnField({ label, value }: { label: string; value: string | null | undefined }) {
-  if (!value?.trim()) return null;
+function HymnField({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | null | undefined;
+}) {
+  const hasValue = Boolean(value?.trim());
+  const hymn = hasValue ? parseHymn(value!) : null;
+
   return (
-    <div className="presentation-field presentation-hymn">
-      <dt className="presentation-label">{label}</dt>
-      <dd className="presentation-value">{value}</dd>
+    <div
+      className={`presentation-field presentation-hymn ${!hasValue ? "presentation-hymn-empty" : ""}`}
+    >
+      <div className="presentation-hymn-header">
+        <span className="presentation-hymn-icon" aria-hidden>
+          ♪
+        </span>
+        <dt className="presentation-label">{label}</dt>
+      </div>
+      {hasValue && hymn ? (
+        <dd className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          {hymn.number && (
+            <span className="presentation-hymn-number">{hymn.number}</span>
+          )}
+          <span className="presentation-hymn-title">
+            {hymn.number ? hymn.title : value}
+          </span>
+        </dd>
+      ) : (
+        <dd className="presentation-value-empty mt-1">Não informado</dd>
+      )}
     </div>
   );
 }
 
 export function AgendaPresentation({ agenda }: AgendaPresentationProps) {
+  const dayLabel = format(agenda.data, "EEE", { locale: ptBR }).toUpperCase();
+  const dayNumber = format(agenda.data, "d");
+
   return (
-    <div className="presentation-root min-h-screen bg-white text-slate-900">
+    <div className="presentation-root">
       <header className="presentation-header">
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#c9a227]">
-              A Igreja de Jesus Cristo dos Santos dos Últimos Dias
-            </p>
-            <h1 className="mt-2 text-3xl font-bold text-white md:text-4xl">
-              Agenda Sacramental
-            </h1>
-            <p className="mt-1 text-sm text-blue-100">Ala Novo Hamburgo</p>
+          <div className="flex items-start gap-4">
+            <div className="ala-day-sidebar rounded-md">
+              <span className="ala-day-sidebar-label">{dayLabel}</span>
+              <span className="ala-day-sidebar-value">{dayNumber}</span>
+            </div>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#f0ddb8]">
+                A Igreja de Jesus Cristo dos Santos dos Últimos Dias
+              </p>
+              <h1 className="font-display mt-2 text-3xl font-bold text-white md:text-4xl">
+                Agenda Sacramental
+              </h1>
+              <p className="font-script mt-1 text-2xl text-[#f0ddb8]">Ala Novo Hamburgo</p>
+            </div>
           </div>
           <div className="flex flex-wrap gap-2">
             <Link href={`/bispado/agendas-sacramentais/${agenda.id}`} className="presentation-btn">
@@ -75,25 +128,23 @@ export function AgendaPresentation({ agenda }: AgendaPresentationProps) {
           </div>
         </div>
 
-        <div className="mt-6 flex flex-wrap gap-6 border-t border-white/20 pt-4">
+        <div className="mt-6 flex flex-wrap gap-8 border-t border-white/20 pt-4">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-blue-200">Data</p>
-            <p className="mt-1 text-lg font-semibold capitalize text-white">
+            <p className="presentation-header-stat-label">Data</p>
+            <p className="presentation-header-stat-value">
               {format(agenda.data, "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })}
             </p>
           </div>
-          {agenda.frequencia != null && (
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-blue-200">
-                Frequência
-              </p>
-              <p className="mt-1 text-lg font-semibold text-white">{agenda.frequencia}</p>
-            </div>
-          )}
+          <div>
+            <p className="presentation-header-stat-label">Frequência</p>
+            <p className="presentation-header-stat-value-gold">
+              {agenda.frequencia != null ? agenda.frequencia : "—"}
+            </p>
+          </div>
         </div>
       </header>
 
-      <div className="presentation-body mx-auto max-w-5xl px-6 py-8 md:px-10">
+      <div className="presentation-body">
         <section className="presentation-section">
           <h2 className="presentation-section-title">Abertura</h2>
           <dl className="presentation-grid">
@@ -106,33 +157,43 @@ export function AgendaPresentation({ agenda }: AgendaPresentationProps) {
             <HymnField label="Hino de abertura" value={agenda.hinoAbertura} />
             <Field label="1ª Oração" value={agenda.primeiraOracao} />
           </dl>
-          {agenda.anuncios && (
-            <div className="mt-4">
-              <h3 className="presentation-label mb-2">Anúncios</h3>
+          <div className="mt-4">
+            <h3 className="presentation-label mb-2">Anúncios</h3>
+            {agenda.anuncios?.trim() ? (
               <div
                 className="presentation-announcements prose prose-sm max-w-none"
                 dangerouslySetInnerHTML={{ __html: agenda.anuncios }}
               />
-            </div>
-          )}
+            ) : (
+              <p className="presentation-field presentation-field-empty presentation-value-empty px-4 py-3">
+                Nenhum anúncio registrado
+              </p>
+            )}
+          </div>
         </section>
 
-        {agenda.chamados.length > 0 && (
-          <section className="presentation-section">
-            <h2 className="presentation-section-title">
-              Chamados, apoios, desobrigações, votos de plena aceitação
-            </h2>
+        <section className="presentation-section">
+          <h2 className="presentation-section-title">
+            Chamados, apoios, desobrigações, votos de plena aceitação
+          </h2>
+          {agenda.chamados.length > 0 ? (
             <ul className="space-y-2">
               {agenda.chamados.map((item, index) => (
-                <li key={index} className="rounded-md border border-slate-200 bg-slate-50 px-4 py-3">
-                  <span className="font-semibold text-slate-900">{item.pessoa}</span>
-                  <span className="text-slate-500"> — </span>
-                  <span className="text-slate-700">{item.chamado}</span>
+                <li key={index} className="presentation-chamado">
+                  <span className="font-display font-semibold text-brand-navy-dark">
+                    {item.pessoa}
+                  </span>
+                  <span className="text-brand-text-muted"> — </span>
+                  <span className="text-brand-text">{item.chamado}</span>
                 </li>
               ))}
             </ul>
-          </section>
-        )}
+          ) : (
+            <p className="presentation-field presentation-field-empty presentation-value-empty px-4 py-3">
+              Nenhum chamado registrado
+            </p>
+          )}
+        </section>
 
         <section className="presentation-section">
           <h2 className="presentation-section-title">Sacramento</h2>

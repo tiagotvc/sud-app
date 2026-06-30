@@ -5,7 +5,8 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { ReactNode } from "react";
-import { UserRole } from "@/lib/user-role";
+import { AdminBreadcrumb } from "@/components/layout/AdminBreadcrumb";
+import { UserRole, roleLabel } from "@/lib/user-role";
 
 interface NavItem {
   href: string;
@@ -15,12 +16,17 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { href: "/bispado", label: "Dashboard" },
+  { href: "/bispado/comunicacao", label: "Comunicação", roles: [UserRole.ADMIN, UserRole.BISPADO] },
   {
     href: "/bispado/agendas-sacramentais",
     label: "Agendas Sacramentais",
     roles: [UserRole.BISPADO],
   },
-  { href: "#", label: "Avisos", roles: [UserRole.ADMIN, UserRole.BISPADO] },
+  {
+    href: "/bispado/entrevistas",
+    label: "Entrevistas",
+    roles: [UserRole.ADMIN, UserRole.BISPADO, UserRole.CONSELHEIRO],
+  },
 ];
 
 interface AdminLayoutProps {
@@ -29,39 +35,31 @@ interface AdminLayoutProps {
   userRole: UserRole;
 }
 
-function pageTitle(pathname: string): string {
-  if (pathname === "/bispado") return "Dashboard";
-  if (pathname.includes("/apresentacao")) return "Apresentação";
-  if (pathname.startsWith("/bispado/agendas-sacramentais/nova")) return "Nova agenda";
-  if (pathname.match(/\/agendas-sacramentais\/[^/]+$/)) return "Editar agenda";
-  if (pathname.startsWith("/bispado/agendas-sacramentais")) return "Agendas sacramentais";
-  return "Painel";
-}
-
 export function AdminLayout({ children, userName, userRole }: AdminLayoutProps) {
   const pathname = usePathname();
-  const title = pageTitle(pathname);
 
   const visibleNav = navItems.filter(
     (item) => !item.roles || item.roles.includes(userRole),
   );
 
   return (
-    <div className="flex min-h-screen bg-[#f4f6f9]">
-      <aside className="fixed inset-y-0 left-0 z-30 flex w-[240px] flex-col border-r border-slate-200 bg-white">
-        <div className="border-b border-slate-200 px-4 py-4">
+    <div className="flex min-h-screen bg-brand-bg">
+      <aside className="admin-sidebar">
+        <div className="border-b border-white/10 px-4 py-5">
           <Link href="/bispado" className="flex items-center gap-2.5">
-            <Image src="/logo.svg" alt="Zion Connect" width={28} height={28} className="rounded" />
+            <Image src="/logo.svg" alt="Zion Connect" width={32} height={32} className="rounded" />
             <div>
-              <span className="block text-sm font-semibold text-slate-900">Zion Connect</span>
-              <span className="block text-[10px] uppercase tracking-wide text-slate-500">
+              <span className="font-display block text-sm font-semibold text-white">
+                Zion Connect
+              </span>
+              <span className="font-script block text-base leading-none text-brand-gold-light">
                 Ala Novo Hamburgo
               </span>
             </div>
           </Link>
         </div>
 
-        <nav className="flex-1 space-y-0.5 px-2 py-3">
+        <nav className="flex-1 space-y-0.5 px-2 py-4">
           {visibleNav.map((item) => {
             const isActive =
               item.href !== "#" &&
@@ -72,10 +70,10 @@ export function AdminLayout({ children, userName, userRole }: AdminLayoutProps) 
               return (
                 <span
                   key={item.label}
-                  className="flex items-center justify-between rounded-md px-3 py-2 text-sm text-slate-400"
+                  className="flex items-center justify-between rounded-md px-3 py-2 text-sm text-white/40"
                 >
                   {item.label}
-                  <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-medium uppercase">
+                  <span className="rounded bg-white/10 px-1.5 py-0.5 text-[9px] font-medium uppercase text-white/50">
                     Em breve
                   </span>
                 </span>
@@ -86,11 +84,7 @@ export function AdminLayout({ children, userName, userRole }: AdminLayoutProps) 
               <Link
                 key={item.href}
                 href={item.href}
-                className={`block rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                  isActive
-                    ? "bg-[#1a3a6b] text-white"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                }`}
+                className={`admin-nav-link ${isActive ? "admin-nav-link-active" : ""}`}
               >
                 {item.label}
               </Link>
@@ -98,20 +92,18 @@ export function AdminLayout({ children, userName, userRole }: AdminLayoutProps) 
           })}
         </nav>
 
-        <div className="border-t border-slate-200 px-4 py-3">
-          <p className="truncate text-sm font-medium text-slate-900">{userName}</p>
-          <p className="text-xs text-slate-500">
-            {userRole === UserRole.BISPADO ? "Bispado" : "Administrador"}
-          </p>
+        <div className="border-t border-white/10 px-4 py-4">
+          <p className="truncate text-sm font-medium text-white">{userName}</p>
+          <p className="text-xs text-white/50">{roleLabel(userRole)}</p>
         </div>
       </aside>
 
       <div className="flex min-h-screen flex-1 flex-col pl-[240px]">
-        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-slate-200 bg-white px-6">
-          <h1 className="text-sm font-semibold text-slate-800">{title}</h1>
+        <header className="admin-page-header sticky top-0 z-20 flex h-auto min-h-14 items-center justify-between gap-4 px-6 py-3">
+          <AdminBreadcrumb />
           <div className="flex items-center gap-2">
             <Link
-              href="/"
+              href="/calendario"
               className="crm-btn-ghost"
               target="_blank"
               rel="noopener noreferrer"
@@ -120,7 +112,7 @@ export function AdminLayout({ children, userName, userRole }: AdminLayoutProps) 
             </Link>
             <button
               type="button"
-              onClick={() => signOut({ callbackUrl: "/" })}
+              onClick={() => signOut({ callbackUrl: "/calendario" })}
               className="crm-btn-ghost"
             >
               Sair
@@ -128,7 +120,7 @@ export function AdminLayout({ children, userName, userRole }: AdminLayoutProps) 
           </div>
         </header>
 
-        <main className="flex-1 p-6">{children}</main>
+        <main className="admin-main">{children}</main>
       </div>
     </div>
   );

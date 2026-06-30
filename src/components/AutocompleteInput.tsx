@@ -14,27 +14,13 @@ interface AutocompleteInputProps {
   variant?: FieldVariant;
 }
 
-const variantStyles: Record<
-  FieldVariant,
-  { input: string; label: string; suggestion: string; icon?: string }
-> = {
-  default: {
-    input: "field-input",
-    label: "field-label",
-    suggestion: "hover:bg-blue-50",
-  },
-  hymn: {
-    input: "field-input hymn-input",
-    label: "field-label hymn-label",
-    suggestion: "hover:bg-indigo-50 text-indigo-900",
-    icon: "♪",
-  },
-  person: {
-    input: "field-input",
-    label: "field-label",
-    suggestion: "hover:bg-blue-50",
-  },
-};
+function parseHymnSuggestion(option: string): { number: string; title: string } {
+  const match = option.trim().match(/^(\d+)\s*[-–—]?\s*(.+)$/);
+  if (match) {
+    return { number: match[1], title: match[2].trim() };
+  }
+  return { number: "", title: option };
+}
 
 export function AutocompleteInput({
   label,
@@ -49,7 +35,7 @@ export function AutocompleteInput({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const styles = variantStyles[variant];
+  const isHymn = variant === "hymn";
 
   const fetchSuggestions = useCallback(
     async (query: string) => {
@@ -120,51 +106,73 @@ export function AutocompleteInput({
     }
   }
 
+  const inputElement = (
+    <input
+      type="text"
+      value={value}
+      onChange={(event) => handleChange(event.target.value)}
+      onFocus={handleFocus}
+      onBlur={() => {
+        void handleBlur();
+        setTimeout(() => setOpen(false), 150);
+      }}
+      placeholder={placeholder ?? (isHymn ? "Ex: 73 — Onde encontrar a paz" : undefined)}
+      className={isHymn ? "hymn-input" : "field-input w-full"}
+    />
+  );
+
   return (
     <div ref={containerRef} className="relative">
-      <label className={styles.label}>
-        {variant === "hymn" && (
-          <span className="mr-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-indigo-100 text-xs text-indigo-700">
-            {styles.icon}
-          </span>
-        )}
+      <label className={isHymn ? "hymn-label field-label" : "field-label"}>
+        {isHymn && <span className="hymn-label-icon">♪</span>}
         {label}
       </label>
-      <input
-        type="text"
-        value={value}
-        onChange={(event) => handleChange(event.target.value)}
-        onFocus={handleFocus}
-        onBlur={() => {
-          void handleBlur();
-          setTimeout(() => setOpen(false), 150);
-        }}
-        placeholder={placeholder}
-        className={`w-full ${styles.input}`}
-      />
-      {hint && <p className="mt-1 text-xs text-slate-500">{hint}</p>}
+
+      {isHymn ? <div className="hymn-field">{inputElement}</div> : inputElement}
+
+      {hint && <p className="mt-1.5 text-xs text-brand-text-muted">{hint}</p>}
 
       {open && (suggestions.length > 0 || loading) && (
-        <ul className="absolute z-20 mt-1 max-h-48 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 shadow-xl ring-1 ring-slate-100">
+        <ul
+          className={
+            isHymn
+              ? "hymn-suggestions"
+              : "absolute z-20 mt-1 max-h-48 w-full overflow-auto rounded-md border border-brand-border bg-white py-1 shadow-lg"
+          }
+        >
           {loading && (
-            <li className="px-3 py-2 text-sm text-slate-500">Carregando...</li>
+            <li className="px-3 py-2 text-sm text-brand-text-muted">Carregando...</li>
           )}
           {!loading &&
-            suggestions.map((option) => (
-              <li key={option}>
-                <button
-                  type="button"
-                  onMouseDown={(event) => event.preventDefault()}
-                  onClick={() => handleSelect(option)}
-                  className={`block w-full px-3 py-2 text-left text-sm text-slate-800 ${styles.suggestion}`}
-                >
-                  {variant === "hymn" && (
-                    <span className="mr-2 font-mono text-xs text-indigo-500">♪</span>
-                  )}
-                  {option}
-                </button>
-              </li>
-            ))}
+            suggestions.map((option) => {
+              const hymn = isHymn ? parseHymnSuggestion(option) : null;
+
+              return (
+                <li key={option}>
+                  <button
+                    type="button"
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => handleSelect(option)}
+                    className={
+                      isHymn
+                        ? "hymn-suggestion-item"
+                        : "block w-full px-3 py-2 text-left text-sm text-brand-text hover:bg-brand-cream-warm"
+                    }
+                  >
+                    {isHymn && hymn ? (
+                      <>
+                        {hymn.number && (
+                          <span className="hymn-suggestion-number">{hymn.number}</span>
+                        )}
+                        {hymn.title}
+                      </>
+                    ) : (
+                      option
+                    )}
+                  </button>
+                </li>
+              );
+            })}
         </ul>
       )}
     </div>

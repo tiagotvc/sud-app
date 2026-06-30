@@ -1,36 +1,11 @@
 import { ReactNode } from "react";
 
-type Accent = "blue" | "indigo" | "amber" | "emerald" | "violet";
+type Accent = "navy" | "gold" | "cream";
 
-const accentStyles: Record<
-  Accent,
-  { border: string; badge: string; title: string }
-> = {
-  blue: {
-    border: "border-l-[#1e4d8c]",
-    badge: "bg-blue-50 text-blue-800",
-    title: "text-blue-950",
-  },
-  indigo: {
-    border: "border-l-indigo-500",
-    badge: "bg-indigo-50 text-indigo-800",
-    title: "text-indigo-950",
-  },
-  amber: {
-    border: "border-l-amber-500",
-    badge: "bg-amber-50 text-amber-900",
-    title: "text-amber-950",
-  },
-  emerald: {
-    border: "border-l-emerald-500",
-    badge: "bg-emerald-50 text-emerald-800",
-    title: "text-emerald-950",
-  },
-  violet: {
-    border: "border-l-violet-500",
-    badge: "bg-violet-50 text-violet-800",
-    title: "text-violet-950",
-  },
+const accentIcons: Record<Accent, string> = {
+  navy: "◆",
+  gold: "✦",
+  cream: "◇",
 };
 
 interface FormSectionProps {
@@ -43,27 +18,22 @@ interface FormSectionProps {
 export function FormSection({
   title,
   subtitle,
-  accent = "blue",
+  accent = "navy",
   children,
 }: FormSectionProps) {
-  const styles = accentStyles[accent];
-
   return (
-    <section
-      className={`overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm ring-1 ring-slate-100 ${styles.border} border-l-4`}
-    >
-      <div className="border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white px-5 py-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <span
-            className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest ${styles.badge}`}
-          >
-            Seção
-          </span>
+    <section className="form-section">
+      <div className="form-section-header">
+        <div className="form-section-tab">
+          <span className="form-section-tab-icon">{accentIcons[accent]}</span>
         </div>
-        <h3 className={`mt-1 text-base font-semibold ${styles.title}`}>{title}</h3>
-        {subtitle && <p className="mt-0.5 text-sm text-slate-500">{subtitle}</p>}
+        <div className="form-section-heading">
+          <p className="text-eyebrow">Seção</p>
+          <h3 className="form-section-title">{title}</h3>
+          {subtitle && <p className="form-section-subtitle">{subtitle}</p>}
+        </div>
       </div>
-      <div className="p-5">{children}</div>
+      <div className="form-section-body">{children}</div>
     </section>
   );
 }
@@ -84,26 +54,19 @@ export function AgendaHeader({
   editable = true,
 }: AgendaHeaderProps) {
   return (
-    <header className="overflow-hidden rounded-xl border border-[#c9a227]/20 shadow-lg">
-      <div className="relative bg-gradient-to-br from-[#0c1f3d] via-[#1a3a6b] to-[#0c1f3d] px-6 py-8 text-white">
-        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#c9a227] to-transparent" />
-        <p className="text-center text-[10px] font-semibold uppercase tracking-[0.25em] text-blue-100/90">
+    <header className="agenda-header">
+      <div className="agenda-header-banner">
+        <p className="agenda-header-church">
           A Igreja de Jesus Cristo dos Santos dos Últimos Dias
         </p>
-        <h2 className="mt-3 text-center text-3xl font-bold tracking-tight">
-          Agenda Sacramental
-        </h2>
-        <p className="mt-1 text-center text-sm font-medium text-[#c9a227]/90">
-          Ala Novo Hamburgo
-        </p>
+        <h2 className="agenda-header-title">Agenda Sacramental</h2>
+        <p className="agenda-header-ward">Ala Novo Hamburgo</p>
       </div>
 
       {editable && onDataChange && onFrequenciaChange && (
-        <div className="grid gap-4 border-t border-slate-200 bg-white p-5 md:grid-cols-2">
+        <div className="grid gap-4 border-t border-brand-border bg-brand-surface p-5 md:grid-cols-2">
           <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Data
-            </label>
+            <label className="field-label">Data</label>
             <input
               type="date"
               required
@@ -113,9 +76,7 @@ export function AgendaHeader({
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Frequência
-            </label>
+            <label className="field-label">Frequência</label>
             <input
               type="number"
               min={0}

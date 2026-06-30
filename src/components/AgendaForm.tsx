@@ -92,7 +92,7 @@ export function AgendaForm({ initialData, mode }: AgendaFormProps) {
         onFrequenciaChange={(value) => updateField("frequencia", value)}
       />
 
-      <FormSection title="Abertura" subtitle="Presidência, música e reconhecimentos" accent="blue">
+      <FormSection title="Abertura" subtitle="Presidência, música e reconhecimentos" accent="navy">
         <div className="grid gap-4 md:grid-cols-2">
           <AutocompleteInput
             label="Presidida por"
@@ -164,7 +164,7 @@ export function AgendaForm({ initialData, mode }: AgendaFormProps) {
 
       <FormSection
         title="Chamados, apoios, desobrigações, votos de plena aceitação"
-        accent="violet"
+        accent="gold"
       >
         <ChamadosEditor
           value={form.chamados ?? []}
@@ -172,7 +172,7 @@ export function AgendaForm({ initialData, mode }: AgendaFormProps) {
         />
       </FormSection>
 
-      <FormSection title="Sacramento" accent="indigo">
+      <FormSection title="Sacramento" accent="gold">
         <AutocompleteInput
           label="Hino sacramental"
           value={form.hinoSacramental ?? ""}
@@ -183,7 +183,7 @@ export function AgendaForm({ initialData, mode }: AgendaFormProps) {
         />
       </FormSection>
 
-      <FormSection title="Discursos — 1ª parte" accent="emerald">
+      <FormSection title="Discursos — 1ª parte" accent="navy">
         <div className="grid gap-4 md:grid-cols-2">
           <AutocompleteInput
             label="1º Orador(a)"
@@ -212,7 +212,7 @@ export function AgendaForm({ initialData, mode }: AgendaFormProps) {
         </div>
       </FormSection>
 
-      <FormSection title="Último orador e encerramento" accent="blue">
+      <FormSection title="Último orador e encerramento" accent="cream">
         <div className="grid gap-4 md:grid-cols-2">
           <AutocompleteInput
             label="Último orador(a)"
@@ -245,7 +245,7 @@ export function AgendaForm({ initialData, mode }: AgendaFormProps) {
         </div>
       )}
 
-      <div className="crm-toolbar mt-2 border-t-0 bg-slate-50">
+      <div className="crm-toolbar mt-2 border-t-0">
         <button type="submit" disabled={saving} className="crm-btn-primary">
           {saving ? "Salvando..." : mode === "create" ? "Criar agenda" : "Salvar alterações"}
         </button>
