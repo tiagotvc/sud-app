@@ -61,6 +61,7 @@ export default async function AgendaDetailPage({ params }: PageProps) {
           hinoEncerramento: agenda.hinoEncerramento ?? "",
           oracaoEncerramento: agenda.oracaoEncerramento ?? "",
           chamados: agenda.chamados.map((item) => ({
+            tipo: item.tipo,
             pessoa: item.pessoa,
             chamado: item.chamado,
           })),

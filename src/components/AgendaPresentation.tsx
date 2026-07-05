@@ -25,7 +25,11 @@ export interface AgendaPresentationData {
   ultimoOrador: string | null;
   hinoEncerramento: string | null;
   oracaoEncerramento: string | null;
-  chamados: { pessoa: string; chamado: string }[];
+  chamados: {
+    tipo: "APOIO" | "DESOBRIGACAO";
+    pessoa: string;
+    chamado: string;
+  }[];
 }
 
 interface AgendaPresentationProps {
@@ -100,6 +104,8 @@ export function AgendaPresentation({ agenda }: AgendaPresentationProps) {
   const dayLabel = format(agenda.data, "EEE", { locale: ptBR }).toUpperCase();
   const dayNumber = format(agenda.data, "d");
   const isTestimonyMeeting = agenda.tipo === "TESTEMUNHO";
+  const releases = agenda.chamados.filter((item) => item.tipo === "DESOBRIGACAO");
+  const sustainings = agenda.chamados.filter((item) => item.tipo === "APOIO");
 
   return (
     <div className="presentation-root">
@@ -182,17 +188,34 @@ export function AgendaPresentation({ agenda }: AgendaPresentationProps) {
             Chamados, apoios, desobrigações, votos de plena aceitação
           </h2>
           {agenda.chamados.length > 0 ? (
-            <ul className="space-y-2">
-              {agenda.chamados.map((item, index) => (
-                <li key={index} className="presentation-chamado">
-                  <span className="font-display font-semibold text-brand-navy-dark">
-                    {item.pessoa}
-                  </span>
-                  <span className="text-brand-text-muted"> — </span>
-                  <span className="text-brand-text">{item.chamado}</span>
-                </li>
-              ))}
-            </ul>
+            <div className="presentation-chamados-grid">
+              {releases.length > 0 && (
+                <div className="presentation-chamados-group presentation-chamados-release">
+                  <h3><span aria-hidden="true">↓</span> Desobrigações</h3>
+                  <ul>
+                    {releases.map((item, index) => (
+                      <li key={`${item.pessoa}-${index}`} className="presentation-chamado">
+                        <strong>{item.pessoa}</strong>
+                        <span>{item.chamado}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {sustainings.length > 0 && (
+                <div className="presentation-chamados-group presentation-chamados-support">
+                  <h3><span aria-hidden="true">↑</span> Apoios</h3>
+                  <ul>
+                    {sustainings.map((item, index) => (
+                      <li key={`${item.pessoa}-${index}`} className="presentation-chamado">
+                        <strong>{item.pessoa}</strong>
+                        <span>{item.chamado}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           ) : (
             <p className="presentation-field presentation-field-empty presentation-value-empty px-4 py-3">
               Nenhum chamado registrado

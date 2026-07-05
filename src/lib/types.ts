@@ -1,4 +1,5 @@
 export interface AgendaChamadoInput {
+  tipo: "APOIO" | "DESOBRIGACAO";
   pessoa: string;
   chamado: string;
 }

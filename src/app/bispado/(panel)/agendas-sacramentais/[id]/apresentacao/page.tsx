@@ -52,7 +52,11 @@ export default async function AgendaApresentacaoPage({ params }: PageProps) {
         ultimoOrador: agenda.ultimoOrador,
         hinoEncerramento: agenda.hinoEncerramento,
         oracaoEncerramento: agenda.oracaoEncerramento,
-        chamados: agenda.chamados.map((c) => ({ pessoa: c.pessoa, chamado: c.chamado })),
+        chamados: agenda.chamados.map((c) => ({
+          tipo: c.tipo,
+          pessoa: c.pessoa,
+          chamado: c.chamado,
+        })),
       }}
     />
   );

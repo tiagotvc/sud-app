@@ -97,6 +97,7 @@ export function buildChamadosData(chamados: AgendaInput["chamados"]) {
   return (chamados ?? [])
     .filter((item) => item.pessoa.trim() || item.chamado.trim())
     .map((item, index) => ({
+      tipo: item.tipo === "DESOBRIGACAO" ? "DESOBRIGACAO" as const : "APOIO" as const,
       pessoa: item.pessoa.trim(),
       chamado: item.chamado.trim(),
       ordem: index,

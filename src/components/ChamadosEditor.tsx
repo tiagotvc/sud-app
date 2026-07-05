@@ -9,14 +9,18 @@ interface ChamadosEditorProps {
 }
 
 export function ChamadosEditor({ value, onChange }: ChamadosEditorProps) {
-  function updateItem(index: number, field: keyof AgendaChamadoInput, fieldValue: string) {
+  function updateItem<K extends keyof AgendaChamadoInput>(
+    index: number,
+    field: K,
+    fieldValue: AgendaChamadoInput[K],
+  ) {
     const next = [...value];
     next[index] = { ...next[index], [field]: fieldValue };
     onChange(next);
   }
 
   function addItem() {
-    onChange([...value, { pessoa: "", chamado: "" }]);
+    onChange([...value, { tipo: "APOIO", pessoa: "", chamado: "" }]);
   }
 
   function removeItem(index: number) {
@@ -44,8 +48,25 @@ export function ChamadosEditor({ value, onChange }: ChamadosEditorProps) {
       {value.map((item, index) => (
         <div
           key={index}
-          className="grid gap-3 rounded-lg border border-brand-border bg-brand-cream-warm p-4 md:grid-cols-[1fr_1fr_auto]"
+          className="agenda-chamado-editor-row"
         >
+          <div>
+            <label className="field-label">Tipo</label>
+            <select
+              value={item.tipo}
+              onChange={(event) =>
+                updateItem(
+                  index,
+                  "tipo",
+                  event.target.value as AgendaChamadoInput["tipo"],
+                )
+              }
+              className="field-input field-select w-full"
+            >
+              <option value="APOIO">Apoio</option>
+              <option value="DESOBRIGACAO">Desobrigação</option>
+            </select>
+          </div>
           <AutocompleteInput
             label="Pessoa"
             value={item.pessoa}
