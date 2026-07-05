@@ -5,6 +5,7 @@ export interface AgendaChamadoInput {
 
 export interface AgendaInput {
   data: string;
+  tipo: "NORMA" | "TESTEMUNHO";
   frequencia?: number | null;
   presididaPor?: string;
   dirigidaPor?: string;

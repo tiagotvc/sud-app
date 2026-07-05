@@ -66,8 +66,13 @@ export async function syncMasterData(input: AgendaInput) {
 }
 
 export function buildAgendaData(input: AgendaInput) {
+  const tipo: AgendaInput["tipo"] =
+    input.tipo === "TESTEMUNHO" ? "TESTEMUNHO" : "NORMA";
+  const isTestimonyMeeting = tipo === "TESTEMUNHO";
+
   return {
     data: new Date(input.data),
+    tipo,
     frequencia: input.frequencia ?? null,
     presididaPor: input.presididaPor?.trim() || null,
     dirigidaPor: input.dirigidaPor?.trim() || null,
@@ -79,10 +84,10 @@ export function buildAgendaData(input: AgendaInput) {
     hinoAbertura: input.hinoAbertura?.trim() || null,
     primeiraOracao: input.primeiraOracao?.trim() || null,
     hinoSacramental: input.hinoSacramental?.trim() || null,
-    primeiroOrador: input.primeiroOrador?.trim() || null,
-    segundoOrador: input.segundoOrador?.trim() || null,
-    hinoEspecial: input.hinoEspecial?.trim() || null,
-    ultimoOrador: input.ultimoOrador?.trim() || null,
+    primeiroOrador: isTestimonyMeeting ? null : input.primeiroOrador?.trim() || null,
+    segundoOrador: isTestimonyMeeting ? null : input.segundoOrador?.trim() || null,
+    hinoEspecial: isTestimonyMeeting ? null : input.hinoEspecial?.trim() || null,
+    ultimoOrador: isTestimonyMeeting ? null : input.ultimoOrador?.trim() || null,
     hinoEncerramento: input.hinoEncerramento?.trim() || null,
     oracaoEncerramento: input.oracaoEncerramento?.trim() || null,
   };

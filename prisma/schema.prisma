@@ -25,6 +25,11 @@ enum ModoEntrevista {
   ONLINE
 }
 
+enum TipoAgendaSacramental {
+  NORMA
+  TESTEMUNHO
+}
+
 model Usuario {
   id           String   @id @default(cuid())
   nome         String
@@ -60,6 +65,7 @@ model Chamado {
 model Agenda {
   id                        String   @id @default(cuid())
   data                      DateTime
+  tipo                      TipoAgendaSacramental @default(NORMA)
   frequencia                Int?
   presididaPor              String?
   dirigidaPor               String?

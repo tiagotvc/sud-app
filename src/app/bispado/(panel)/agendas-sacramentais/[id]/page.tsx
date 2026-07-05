@@ -20,7 +20,6 @@ export default async function AgendaDetailPage({ params }: PageProps) {
   }
 
   const { id } = await params;
-
   const agenda = await prisma.agenda.findUnique({
     where: { id },
     include: {
@@ -28,34 +27,22 @@ export default async function AgendaDetailPage({ params }: PageProps) {
     },
   });
 
-  if (!agenda) {
-    notFound();
-  }
+  if (!agenda) notFound();
 
   return (
-    <div className="page-shell space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <Link href="/bispado/agendas-sacramentais" className="crm-btn-ghost -ml-3">
-            ← Voltar para agendas
-          </Link>
-          <h1 className="text-page-title mt-2">Editar Agenda Sacramental</h1>
-          <p className="mt-1 text-sm text-brand-text-muted">
-            {format(agenda.data, "dd/MM/yyyy")} — atualize os campos da reunião sacramental.
-          </p>
-        </div>
-        <Link
-          href={`/bispado/agendas-sacramentais/${agenda.id}/apresentacao`}
-          className="crm-btn-primary"
-        >
-          ▶ Apresentar
-        </Link>
-      </div>
+    <div className="page-shell agenda-editor-page">
+      <Link href="/bispado/agendas-sacramentais" className="agenda-editor-back">
+        <span aria-hidden="true">‹</span>
+        Agendas Sacramentais
+        <span aria-hidden="true">/</span>
+        <strong>Agenda de {format(agenda.data, "dd/MM/yyyy")}</strong>
+      </Link>
       <AgendaForm
         mode="edit"
         initialData={{
           id: agenda.id,
           data: format(agenda.data, "yyyy-MM-dd"),
+          tipo: agenda.tipo,
           frequencia: agenda.frequencia,
           presididaPor: agenda.presididaPor ?? "",
           dirigidaPor: agenda.dirigidaPor ?? "",

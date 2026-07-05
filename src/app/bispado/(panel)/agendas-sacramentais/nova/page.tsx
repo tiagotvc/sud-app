@@ -12,16 +12,13 @@ export default async function NovaAgendaPage() {
   }
 
   return (
-    <div className="page-shell space-y-6">
-      <div>
-        <Link href="/bispado/agendas-sacramentais" className="crm-btn-ghost -ml-3">
-          ← Voltar para agendas
-        </Link>
-        <h1 className="text-page-title mt-2">Nova Agenda Sacramental</h1>
-        <p className="mt-1 text-sm text-brand-text-muted">
-          Preencha os campos da reunião sacramental desta semana.
-        </p>
-      </div>
+    <div className="page-shell agenda-editor-page">
+      <Link href="/bispado/agendas-sacramentais" className="agenda-editor-back">
+        <span aria-hidden="true">‹</span>
+        Agendas Sacramentais
+        <span aria-hidden="true">/</span>
+        <strong>Nova agenda</strong>
+      </Link>
       <AgendaForm mode="create" />
     </div>
   );

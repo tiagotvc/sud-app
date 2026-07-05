@@ -7,6 +7,7 @@ import { ptBR } from "date-fns/locale";
 export interface AgendaPresentationData {
   id: string;
   data: Date;
+  tipo: "NORMA" | "TESTEMUNHO";
   frequencia: number | null;
   presididaPor: string | null;
   dirigidaPor: string | null;
@@ -98,6 +99,7 @@ function HymnField({
 export function AgendaPresentation({ agenda }: AgendaPresentationProps) {
   const dayLabel = format(agenda.data, "EEE", { locale: ptBR }).toUpperCase();
   const dayNumber = format(agenda.data, "d");
+  const isTestimonyMeeting = agenda.tipo === "TESTEMUNHO";
 
   return (
     <div className="presentation-root">
@@ -116,6 +118,9 @@ export function AgendaPresentation({ agenda }: AgendaPresentationProps) {
                 Agenda Sacramental
               </h1>
               <p className="font-script mt-1 text-2xl text-[#f0ddb8]">Ala Novo Hamburgo</p>
+              <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-brand-text-muted">
+                {isTestimonyMeeting ? "Reunião de testemunhos" : "Reunião dominical"}
+              </p>
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -202,19 +207,23 @@ export function AgendaPresentation({ agenda }: AgendaPresentationProps) {
           </dl>
         </section>
 
-        <section className="presentation-section">
-          <h2 className="presentation-section-title">Discursos — 1ª parte</h2>
-          <dl className="presentation-grid">
-            <Field label="1º Orador(a)" value={agenda.primeiroOrador} />
-            <Field label="2º Orador(a)" value={agenda.segundoOrador} />
-            <HymnField label="Hino especial (intervalo)" value={agenda.hinoEspecial} />
-          </dl>
-        </section>
+        {!isTestimonyMeeting && (
+          <section className="presentation-section">
+            <h2 className="presentation-section-title">Discursos — 1ª parte</h2>
+            <dl className="presentation-grid">
+              <Field label="1º Orador(a)" value={agenda.primeiroOrador} />
+              <Field label="2º Orador(a)" value={agenda.segundoOrador} />
+              <HymnField label="Hino especial (intervalo)" value={agenda.hinoEspecial} />
+            </dl>
+          </section>
+        )}
 
         <section className="presentation-section">
-          <h2 className="presentation-section-title">Último orador e encerramento</h2>
+          <h2 className="presentation-section-title">
+            {isTestimonyMeeting ? "Encerramento" : "Último orador e encerramento"}
+          </h2>
           <dl className="presentation-grid">
-            <Field label="Último orador(a)" value={agenda.ultimoOrador} />
+            {!isTestimonyMeeting && <Field label="Último orador(a)" value={agenda.ultimoOrador} />}
             <HymnField label="Hino de encerramento" value={agenda.hinoEncerramento} />
             <Field label="Oração de encerramento" value={agenda.oracaoEncerramento} />
           </dl>

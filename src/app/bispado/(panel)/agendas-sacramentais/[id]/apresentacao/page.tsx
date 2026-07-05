@@ -34,6 +34,7 @@ export default async function AgendaApresentacaoPage({ params }: PageProps) {
       agenda={{
         id: agenda.id,
         data: agenda.data,
+        tipo: agenda.tipo,
         frequencia: agenda.frequencia,
         presididaPor: agenda.presididaPor,
         dirigidaPor: agenda.dirigidaPor,

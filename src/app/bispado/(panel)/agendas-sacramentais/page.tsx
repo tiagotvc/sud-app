@@ -138,7 +138,9 @@ export default async function AgendasSacramentaisPage({
                         <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3.75 9h16.5M5.25 5.25h13.5a1.5 1.5 0 011.5 1.5v12a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-12a1.5 1.5 0 011.5-1.5z" />
                         </svg>
-                        Agenda Sacramental
+                        {agenda.tipo === "TESTEMUNHO"
+                          ? "Agenda de Testemunhos"
+                          : "Agenda Sacramental"}
                       </p>
                       <h2 className="agenda-row-title">
                         {format(agenda.data, "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })}
