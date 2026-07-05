@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import { AdminBreadcrumb } from "@/components/layout/AdminBreadcrumb";
 import { AdminSidebar } from "@/components/layout/AdminSidebar";
-import { UserRole } from "@/lib/user-role";
+import { roleLabel, UserRole } from "@/lib/user-role";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -122,8 +122,23 @@ export function AdminLayout({ children, userName, userRole }: AdminLayoutProps) 
 
       {/* ── Conteúdo ── */}
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-        <header className="admin-page-header sticky top-0 z-20 hidden h-auto min-h-14 items-center justify-between gap-4 px-6 py-3 lg:flex">
+        <header className="admin-page-header sticky top-0 z-20 hidden h-[66px] items-center justify-between gap-4 px-7 lg:flex">
           <AdminBreadcrumb />
+          <div className="flex items-center gap-4">
+            <span className="admin-header-icon" aria-label="Notificações">
+              <svg className="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.7}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.078 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+              </svg>
+            </span>
+            <span className="h-8 w-px bg-brand-border" aria-hidden="true" />
+            <div className="min-w-[118px]">
+              <p className="truncate text-xs font-semibold text-brand-navy-dark">{userName}</p>
+              <p className="mt-0.5 text-[11px] text-brand-text-muted">{roleLabel(userRole)}</p>
+            </div>
+            <svg className="h-4 w-4 text-brand-text-muted" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="m6 9 6 6 6-6" />
+            </svg>
+          </div>
         </header>
 
         <main className="ds-scroll min-h-0 flex-1 overflow-y-auto overflow-x-hidden">

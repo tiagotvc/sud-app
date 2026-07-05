@@ -1,38 +1,63 @@
 @import "tailwindcss";
 
-/* ── Ala Novo Hamburgo · Design tokens ── */
+/* ── Ala Novo Hamburgo · Design tokens (Traffic-IA DS) ── */
 :root {
-  --brand-navy: #1b365d;
-  --brand-navy-dark: #0f2340;
-  --brand-navy-light: #2d5080;
-  --brand-navy-mid: #1b365d;
-  --brand-gold: #d4aa4a;
-  --brand-gold-light: #e8c878;
-  --brand-gold-dark: #a88432;
-  --brand-gold-glow: rgba(184, 151, 101, 0.2);
+  /* "navy" repurposed as neutral dark slate — text/dark-surface only, no longer a decorative fill */
+  --brand-navy: #1e293b;
+  --brand-navy-dark: #0f172a;
+  --brand-navy-light: #334155;
+  --brand-navy-mid: #1e293b;
+  /* "gold" repurposed as a muted amber — reserved for small badge/highlight accents only */
+  --brand-gold: #d4880a;
+  --brand-gold-light: #f5a623;
+  --brand-gold-dark: #a8690a;
+  --brand-gold-glow: rgba(212, 136, 10, 0.16);
 
-  /* Neutros + fundo limpo */
-  --brand-bg: #f0f2f6;
+  /* ── Accent azul (Traffic-IA DS, em vez do roxo) ── */
+  --accent: #2563eb;
+  --accent-bright: #3b82f6;
+  --accent-from: #1e40af;
+  --accent-to: #2563eb;
+  --accent-text: #ffffff;
+  --accent-muted: rgba(37, 99, 235, 0.1);
+  --accent-muted-strong: rgba(37, 99, 235, 0.14);
+  --accent-border: rgba(37, 99, 235, 0.32);
+  --accent-hover: rgba(37, 99, 235, 0.06);
+  --accent-ring: rgba(37, 99, 235, 0.22);
+  --accent-shadow: rgba(37, 99, 235, 0.28);
+
+  /* Button DS (Traffic-IA) */
+  --btn-radius: 0.5rem;
+  --btn-radius-sm: 0.375rem;
+  --btn-border-width: 1px;
+  --btn-padding-x: 0.875rem;
+  --btn-padding-y: 0.5rem;
+  --btn-padding-x-sm: 0.75rem;
+  --btn-padding-y-sm: 0.375rem;
+
+  /* Neutros + fundo limpo (surfaces estilo Traffic-IA) */
+  --brand-bg: #f8fafc;
   --brand-cream: var(--brand-bg);
-  --brand-cream-warm: #e8ebf0;
+  --brand-cream-warm: #eef2f7;
   --brand-surface: #ffffff;
-  --brand-border: #d8dee8;
-  --brand-border-strong: #b8c2d0;
+  --brand-border: rgba(15, 23, 42, 0.09);
+  --brand-border-strong: rgba(15, 23, 42, 0.16);
   --brand-text: #0f172a;
-  --brand-text-muted: #64748b;
+  --brand-text-muted: #475569;
   --brand-text-light: #94a3b8;
   --brand-placeholder: #94a3b8;
+  --row-hover: rgba(15, 23, 42, 0.03);
 
   /* Campos de hino — limpos, acento só na borda */
   --hymn-bg: #ffffff;
   --hymn-bg-strong: #f8fafc;
   --hymn-border: #e2e8f0;
-  --hymn-text: #1b365d;
-  --hymn-number: #b89765;
+  --hymn-text: #0f172a;
+  --hymn-number: #a16207;
 
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
-  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
-  --shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.1);
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 10px 30px -12px rgba(15, 23, 42, 0.18);
 
   /* legacy aliases */
   --zion-bg: var(--brand-cream);
@@ -63,42 +88,52 @@
   --color-brand-border: var(--brand-border);
   --color-brand-text-muted: var(--brand-text-muted);
   --color-brand-text-light: var(--brand-text-light);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-cinzel);
-  --font-script: var(--font-great-vibes);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-heading);
+  --font-script: var(--font-heading);
 }
 
 /* ── Base ── */
 body {
   background: var(--brand-bg);
   color: var(--brand-text);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* ── Typography ── */
 .font-display {
-  font-family: var(--font-cinzel), Georgia, "Times New Roman", serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
 }
 
 .font-script {
-  font-family: var(--font-great-vibes), cursive;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
 }
 
 .text-eyebrow {
   @apply text-[10px] font-bold uppercase tracking-[0.25em];
-  color: var(--brand-gold);
+  color: var(--accent);
 }
 
 .text-page-title {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   @apply text-2xl font-bold tracking-tight md:text-3xl;
   color: var(--brand-navy-dark);
 }
 
 .text-script-accent {
-  font-family: var(--font-great-vibes), cursive;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
   @apply text-2xl md:text-3xl;
   color: var(--brand-gold-dark);
 }
@@ -139,11 +174,11 @@ body {
 }
 
 .field-input:focus {
-  border-color: var(--brand-navy);
+  border-color: var(--accent);
   background: white;
   box-shadow:
     inset 0 1px 2px rgba(15, 23, 42, 0.03),
-    0 0 0 3px rgba(27, 54, 93, 0.14);
+    0 0 0 3px var(--accent-ring);
 }
 
 .field-input:disabled {
@@ -154,7 +189,7 @@ body {
   appearance: none;
   cursor: pointer;
   padding-right: 2.75rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231b365d' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 1rem center;
   background-size: 1rem;
@@ -202,7 +237,7 @@ textarea.field-input {
 }
 
 .field-segment-btn-active {
-  background: var(--brand-navy);
+  background: var(--accent);
   color: white;
   box-shadow: var(--shadow-sm);
 }
@@ -214,7 +249,7 @@ textarea.field-input {
 
 /* Painel admin — cards de formulário */
 .admin-form-card {
-  @apply overflow-hidden rounded-xl border bg-white;
+  @apply overflow-hidden rounded-2xl border bg-white;
   border-color: var(--brand-border);
   box-shadow: var(--shadow-md);
 }
@@ -226,7 +261,7 @@ textarea.field-input {
 }
 
 .admin-form-card-title {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   @apply text-base font-semibold;
   color: var(--brand-navy-dark);
 }
@@ -354,6 +389,18 @@ textarea.field-input {
   @apply w-full flex-1 px-6 py-6 lg:px-10 lg:py-8;
 }
 
+.admin-header-icon {
+  @apply flex h-9 w-9 items-center justify-center rounded-full border bg-white transition-colors;
+  border-color: var(--brand-border);
+  color: var(--brand-navy);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-header-icon:hover {
+  background: #f8fafc;
+  border-color: var(--brand-border-strong);
+}
+
 .admin-breadcrumb-list {
   @apply flex flex-wrap items-center gap-1;
 }
@@ -422,7 +469,7 @@ textarea.field-input {
 }
 
 .admin-page-heading {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   @apply text-xl font-bold tracking-tight sm:text-2xl lg:text-[1.65rem];
   color: var(--brand-navy-dark);
 }
@@ -454,7 +501,7 @@ textarea.field-input {
 .hymn-field:focus-within {
   border-color: var(--brand-border-strong);
   border-left-color: var(--brand-gold);
-  box-shadow: 0 0 0 3px rgba(27, 54, 93, 0.1);
+  box-shadow: 0 0 0 3px var(--accent-ring);
 }
 
 .hymn-input {
@@ -513,97 +560,88 @@ textarea.field-input {
   @apply min-h-full w-full;
 }
 
-/* ── Buttons ── */
-.btn-primary {
-  @apply inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold text-white transition-colors disabled:opacity-60;
-  background: var(--brand-navy);
-  border: none;
-  box-shadow: var(--shadow-sm);
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: var(--brand-navy-dark);
-}
-
-.btn-secondary {
-  @apply inline-flex items-center justify-center rounded-lg border bg-white px-5 py-2.5 text-sm font-medium transition-colors;
-  border-color: var(--brand-border-strong);
-  color: var(--brand-text);
-  box-shadow: var(--shadow-sm);
-}
-
-.btn-secondary:hover:not(:disabled) {
-  background: var(--brand-cream-warm);
-  border-color: var(--brand-border-strong);
-}
-
-.btn-accent {
-  @apply inline-flex items-center justify-center rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors disabled:opacity-60;
-  background: var(--brand-gold);
-  border: none;
-  color: var(--brand-navy-dark);
-  box-shadow: var(--shadow-sm);
-}
-
-.btn-accent:hover:not(:disabled) {
-  background: var(--brand-gold-dark);
-  color: white;
-}
-
-.crm-btn {
-  @apply inline-flex items-center justify-center rounded-lg border bg-white px-3.5 py-2 text-sm font-medium transition-colors disabled:opacity-50;
-  border-color: var(--brand-border);
-  color: var(--brand-text);
-}
-
-.crm-btn:hover:not(:disabled) {
-  background: var(--brand-cream-warm);
-  border-color: var(--brand-border-strong);
-}
-
-.crm-btn-primary {
-  @apply inline-flex items-center justify-center rounded-xl px-3.5 py-2 text-sm font-semibold text-white transition-colors disabled:opacity-50;
-  background: var(--brand-navy);
-  border: none;
-  box-shadow: var(--shadow-sm);
-}
-
-.crm-btn-primary:hover:not(:disabled) {
-  background: var(--brand-navy-dark);
-  box-shadow: var(--shadow-md);
-}
-
+/* ── Buttons (Traffic-IA DS · accent azul) ── */
+/* CTA preenchido — gradiente azul de marca */
+.btn-primary,
+.btn-accent,
+.crm-btn-primary,
 .crm-btn-accent {
-  @apply inline-flex items-center justify-center rounded-lg px-3.5 py-2 text-sm font-semibold transition-colors disabled:opacity-50;
-  background: var(--brand-gold);
+  @apply inline-flex items-center justify-center gap-2 text-sm font-semibold transition disabled:opacity-50;
+  padding: var(--btn-padding-y) var(--btn-padding-x);
+  border-radius: var(--btn-radius);
+  background: linear-gradient(135deg, var(--accent-from), var(--accent-to));
+  color: var(--accent-text);
   border: none;
-  color: var(--brand-navy-dark);
+  box-shadow: 0 8px 20px -6px var(--accent-shadow);
 }
 
+.btn-primary:hover:not(:disabled),
+.btn-accent:hover:not(:disabled),
+.crm-btn-primary:hover:not(:disabled),
 .crm-btn-accent:hover:not(:disabled) {
-  background: var(--brand-gold-dark);
-  color: white;
+  filter: brightness(1.06);
+}
+
+/* Botão maior (formulários) */
+.btn-primary {
+  padding: 0.625rem 1.25rem;
+}
+
+/* Secundário neutro — borda sutil sobre superfície clara */
+.btn-secondary,
+.crm-btn {
+  @apply inline-flex items-center justify-center gap-2 text-sm font-medium transition disabled:opacity-50;
+  padding: var(--btn-padding-y) var(--btn-padding-x);
+  border-radius: var(--btn-radius);
+  border: var(--btn-border-width) solid var(--brand-border-strong);
+  background: var(--brand-surface);
+  color: var(--brand-text-muted);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:hover:not(:disabled),
+.crm-btn:hover:not(:disabled) {
+  border-color: var(--brand-border-strong);
+  background: var(--row-hover);
+  color: var(--brand-text);
+}
+
+/* Secundário com cor de marca (outline azul) */
+.crm-btn-accent-outline,
+.btn-accent-outline {
+  @apply inline-flex items-center justify-center gap-2 bg-transparent text-sm font-semibold transition disabled:opacity-50;
+  padding: var(--btn-padding-y) var(--btn-padding-x);
+  border-radius: var(--btn-radius);
+  border: var(--btn-border-width) solid var(--accent-border);
+  color: var(--accent);
+}
+
+.crm-btn-accent-outline:hover:not(:disabled),
+.btn-accent-outline:hover:not(:disabled) {
+  background: var(--accent-hover);
 }
 
 .crm-btn-ghost {
-  @apply inline-flex items-center justify-center rounded-lg px-3 py-1.5 text-sm font-medium transition-colors;
+  @apply inline-flex items-center justify-center gap-2 text-sm font-medium transition disabled:opacity-50;
+  padding: var(--btn-padding-y-sm) var(--btn-padding-x-sm);
+  border-radius: var(--btn-radius);
   color: var(--brand-text-muted);
 }
 
 .crm-btn-ghost:hover:not(:disabled) {
-  background: var(--brand-cream-warm);
-  color: var(--brand-navy);
+  background: var(--row-hover);
+  color: var(--brand-text);
 }
 
 .crm-toolbar {
-  @apply flex flex-wrap items-center gap-2 rounded-lg border bg-white px-4 py-3;
+  @apply flex flex-wrap items-center gap-2 rounded-xl border bg-white px-4 py-3;
   border-color: var(--brand-border);
   box-shadow: var(--shadow-sm);
 }
 
 /* ── Cards & rows (calendar style) ── */
 .ala-card {
-  @apply overflow-hidden rounded-xl border bg-white;
+  @apply overflow-hidden rounded-2xl border bg-white;
   border-color: var(--brand-border);
   box-shadow: var(--shadow-md);
 }
@@ -657,12 +695,308 @@ textarea.field-input {
 }
 
 .ala-day-sidebar-value {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   @apply mt-1 text-lg font-bold leading-none text-white md:text-xl;
 }
 
 .ala-day-content {
   @apply min-w-0 flex-1 p-4 md:p-5;
+}
+
+/* ── Agendas sacramentais · painel institucional ── */
+.agenda-page {
+  max-width: 1180px;
+  margin-inline: auto;
+}
+
+.agenda-page-intro {
+  @apply flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center;
+}
+
+.agenda-new-button {
+  @apply inline-flex shrink-0 items-center justify-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-white transition-all;
+  background: linear-gradient(135deg, #e0b63d, #bd8618);
+  box-shadow: 0 9px 22px -10px rgba(159, 105, 10, 0.7);
+}
+
+.agenda-new-button:hover {
+  filter: brightness(1.04);
+  transform: translateY(-1px);
+}
+
+.agenda-new-button span {
+  @apply text-lg font-normal leading-none;
+}
+
+.agenda-overview-grid {
+  @apply mt-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_240px];
+}
+
+.agenda-summary-card,
+.agenda-filter-card {
+  @apply rounded-lg border bg-white;
+  border-color: var(--brand-border);
+  box-shadow: var(--shadow-md);
+}
+
+.agenda-summary-card {
+  @apply grid items-center gap-0 overflow-hidden sm:grid-cols-[145px_repeat(3,minmax(0,1fr))];
+  min-height: 88px;
+}
+
+.agenda-card-label {
+  @apply flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider;
+  color: var(--brand-navy-dark);
+}
+
+.agenda-card-label > svg {
+  @apply h-4 w-4;
+  color: #17365f;
+}
+
+.agenda-summary-card > .agenda-card-label {
+  @apply px-5 py-4;
+}
+
+.agenda-stat {
+  @apply relative grid grid-cols-[24px_auto] items-center gap-x-2 px-5 py-4;
+}
+
+.agenda-stat::before {
+  content: "";
+  @apply absolute inset-y-4 left-0 w-px;
+  background: var(--brand-border);
+}
+
+.agenda-stat > svg {
+  @apply row-span-2 h-[18px] w-[18px];
+  color: #17365f;
+}
+
+.agenda-stat-value {
+  font-family: Georgia, "Times New Roman", serif;
+  @apply text-xl font-semibold leading-none;
+  color: #0a2242;
+}
+
+.agenda-stat-label {
+  @apply mt-1 text-[9px] leading-none;
+  color: var(--brand-text-muted);
+}
+
+.agenda-filter-card {
+  @apply p-4;
+}
+
+.agenda-filter-control {
+  @apply relative mt-2 flex h-10 items-center rounded-md border bg-white px-3;
+  border-color: var(--brand-border-strong);
+  color: #17365f;
+}
+
+.agenda-filter-control > svg {
+  @apply h-4 w-4 shrink-0;
+}
+
+.agenda-filter-control select {
+  @apply h-full min-w-0 flex-1 appearance-none bg-transparent px-2 text-xs font-medium outline-none;
+  color: var(--brand-navy-dark);
+}
+
+.agenda-filter-control .agenda-filter-chevron {
+  @apply h-3.5 w-3.5;
+}
+
+.agenda-list-section {
+  @apply mt-7;
+}
+
+.agenda-list {
+  @apply mt-3 space-y-3;
+}
+
+.agenda-page .ala-day-row {
+  min-height: 112px;
+}
+
+.agenda-page .ala-day-sidebar {
+  @apply w-[94px] px-3 py-4 md:w-[106px];
+  background: linear-gradient(145deg, #0b294f, #061a35);
+  border-radius: 0;
+}
+
+.agenda-page .ala-day-sidebar-label {
+  @apply max-w-full truncate text-[8px] font-medium tracking-wider;
+}
+
+.agenda-page .ala-day-sidebar-value {
+  font-family: Georgia, "Times New Roman", serif;
+  @apply mt-1 text-[30px] font-normal;
+}
+
+.ala-day-sidebar-month {
+  @apply mt-2 text-[8px] font-bold uppercase tracking-wide;
+  color: #e1b42f;
+}
+
+.agenda-page .ala-day-content {
+  @apply grid items-center gap-5 p-5 md:grid-cols-[minmax(0,1fr)_110px_auto];
+}
+
+.agenda-row-kicker {
+  @apply flex items-center gap-2 text-[9px] font-bold uppercase tracking-wider;
+  color: #667085;
+}
+
+.agenda-row-kicker svg {
+  @apply h-3.5 w-3.5;
+  color: #c6921f;
+}
+
+.agenda-row-title {
+  font-family: Georgia, "Times New Roman", serif;
+  @apply mt-1 text-base font-semibold capitalize;
+  color: #0a2242;
+}
+
+.agenda-row-people {
+  @apply mt-2 space-y-1 text-[10px];
+}
+
+.agenda-row-people > div {
+  @apply flex gap-2;
+}
+
+.agenda-row-people dt {
+  @apply w-[76px] shrink-0;
+  color: var(--brand-text-muted);
+}
+
+.agenda-row-people dd {
+  @apply truncate font-semibold;
+  color: #28384d;
+}
+
+.agenda-attendance {
+  @apply flex min-h-12 flex-col justify-center border-l pl-6;
+  border-color: var(--brand-border);
+}
+
+.agenda-attendance span {
+  @apply text-[9px];
+  color: var(--brand-text-muted);
+}
+
+.agenda-attendance strong {
+  font-family: Georgia, "Times New Roman", serif;
+  @apply mt-1 text-sm;
+  color: #0a2242;
+}
+
+.agenda-row-actions {
+  @apply flex flex-wrap items-center justify-end gap-2;
+}
+
+.agenda-present-button,
+.agenda-edit-button {
+  @apply inline-flex h-9 items-center justify-center gap-2 rounded-md px-4 text-xs font-semibold transition-colors;
+}
+
+.agenda-present-button {
+  @apply text-white;
+  background: linear-gradient(145deg, #0c2d55, #06182f);
+  box-shadow: 0 6px 14px -8px rgba(4, 20, 41, 0.9);
+}
+
+.agenda-present-button:hover {
+  background: #0d376a;
+}
+
+.agenda-present-button span {
+  @apply text-[9px];
+}
+
+.agenda-edit-button {
+  @apply border bg-white;
+  border-color: var(--brand-border-strong);
+  color: #20334e;
+}
+
+.agenda-edit-button:hover {
+  background: #f8fafc;
+}
+
+.agenda-edit-button svg {
+  @apply h-3.5 w-3.5;
+}
+
+.agenda-page-footer {
+  @apply mt-8 flex flex-col items-center justify-center gap-1 text-center text-[10px];
+  color: var(--brand-text-light);
+}
+
+.agenda-page-footer svg {
+  @apply h-4 w-4;
+}
+
+.agenda-page-footer span {
+  @apply block;
+}
+
+@media (max-width: 767px) {
+  .agenda-summary-card {
+    @apply grid-cols-1;
+  }
+
+  .agenda-summary-card > .agenda-card-label {
+    @apply border-b;
+    border-color: var(--brand-border);
+  }
+
+  .agenda-stat {
+    @apply grid-cols-[24px_auto_1fr] py-3;
+  }
+
+  .agenda-stat::before {
+    @apply inset-x-5 inset-y-auto top-0 h-px w-auto;
+  }
+
+  .agenda-stat-value {
+    @apply text-lg;
+  }
+
+  .agenda-stat-label {
+    @apply col-auto mt-0;
+  }
+
+  .agenda-page .ala-day-row {
+    @apply flex-col;
+  }
+
+  .agenda-page .ala-day-sidebar {
+    @apply w-full flex-row justify-start gap-3 py-3;
+  }
+
+  .agenda-page .ala-day-sidebar-value,
+  .ala-day-sidebar-month {
+    @apply mt-0;
+  }
+
+  .agenda-page .ala-day-content {
+    @apply grid-cols-1;
+  }
+
+  .agenda-attendance {
+    @apply min-h-0 flex-row items-center gap-2 border-l-0 border-t pl-0 pt-3;
+  }
+
+  .agenda-attendance strong {
+    @apply mt-0;
+  }
+
+  .agenda-row-actions {
+    @apply justify-start;
+  }
 }
 
 .agenda-paper {
@@ -711,12 +1045,6 @@ textarea.field-input {
   border: 1px solid var(--brand-gold);
 }
 
-.ala-stamp {
-  @apply inline-flex h-16 w-16 flex-col items-center justify-center rounded-full border-2 text-center;
-  border-color: var(--brand-navy);
-  color: var(--brand-navy);
-}
-
 /* ── Form sections (calendar day-row inspired) ── */
 .form-section {
   @apply overflow-hidden rounded-md border bg-white shadow-sm;
@@ -729,13 +1057,8 @@ textarea.field-input {
 }
 
 .form-section-tab {
-  @apply flex w-12 shrink-0 items-center justify-center;
-  background: var(--brand-navy);
-}
-
-.form-section-tab-icon {
-  @apply text-lg;
-  color: var(--brand-gold);
+  @apply flex w-1.5 shrink-0;
+  background: var(--accent);
 }
 
 .form-section-heading {
@@ -744,7 +1067,7 @@ textarea.field-input {
 }
 
 .form-section-title {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   @apply text-sm font-semibold;
   color: var(--brand-navy-dark);
 }
@@ -766,34 +1089,27 @@ textarea.field-input {
 }
 
 .agenda-header-banner {
-  @apply relative px-6 py-8 text-white;
-  background: linear-gradient(135deg, var(--brand-navy-dark), var(--brand-navy), var(--brand-navy-dark));
-}
-
-.agenda-header-banner::before {
-  content: "";
-  @apply absolute inset-x-0 top-0 h-0.5;
-  background: linear-gradient(
-    to right,
-    transparent,
-    var(--brand-gold),
-    transparent
-  );
+  @apply relative border-b px-6 py-8;
+  border-color: var(--brand-border);
+  background: var(--brand-surface);
 }
 
 .agenda-header-church {
-  @apply text-center text-[10px] font-semibold uppercase tracking-[0.25em] text-white/70;
+  @apply text-center text-[10px] font-semibold uppercase tracking-[0.25em];
+  color: var(--brand-text-light);
 }
 
 .agenda-header-title {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   @apply mt-3 text-center text-3xl font-bold tracking-tight;
+  color: var(--brand-text);
 }
 
 .agenda-header-ward {
-  font-family: var(--font-great-vibes), cursive;
-  @apply mt-1 text-center text-2xl;
-  color: var(--brand-gold-light);
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  @apply mt-1 text-center text-base font-medium;
+  color: var(--brand-text-muted);
 }
 
 /* ── Presentation mode ── */
@@ -803,18 +1119,20 @@ textarea.field-input {
 }
 
 .presentation-header {
-  @apply px-6 py-6 md:px-10 md:py-8;
-  background: linear-gradient(135deg, var(--brand-navy-dark), var(--brand-navy), var(--brand-navy-light));
+  @apply border-b px-6 py-6 md:px-10 md:py-8;
+  border-color: var(--brand-border);
+  background: var(--brand-surface);
 }
 
 .presentation-btn {
-  @apply inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium text-white backdrop-blur transition-colors;
-  border-color: color-mix(in srgb, white 30%, transparent);
-  background: color-mix(in srgb, white 10%, transparent);
+  @apply inline-flex items-center rounded-lg border px-4 py-2 text-sm font-medium transition-colors;
+  border-color: var(--brand-border-strong);
+  background: white;
+  color: var(--brand-text);
 }
 
 .presentation-btn:hover {
-  background: color-mix(in srgb, white 20%, transparent);
+  background: var(--brand-cream-warm);
 }
 
 .presentation-body {
@@ -827,7 +1145,7 @@ textarea.field-input {
 }
 
 .presentation-section-title {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   @apply mb-4 text-xs font-bold uppercase tracking-widest;
   color: var(--brand-navy);
 }
@@ -838,19 +1156,19 @@ textarea.field-input {
 
 .presentation-header-stat-label {
   @apply text-[10px] font-bold uppercase tracking-widest;
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--brand-text-light);
 }
 
 .presentation-header-stat-value {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   @apply mt-1 text-lg font-semibold capitalize;
-  color: #ffffff;
+  color: var(--brand-text);
 }
 
 .presentation-header-stat-value-gold {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   @apply mt-1 text-2xl font-bold tabular-nums;
-  color: var(--brand-gold-light);
+  color: var(--accent);
 }
 
 .presentation-field {
@@ -865,7 +1183,7 @@ textarea.field-input {
 }
 
 .presentation-value-name {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   @apply text-lg font-semibold;
   color: var(--brand-navy-dark);
 }
@@ -898,7 +1216,7 @@ textarea.field-input {
 }
 
 .presentation-hymn-number {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   @apply text-2xl font-bold tabular-nums;
   color: var(--brand-navy);
 }
@@ -942,18 +1260,10 @@ textarea.field-input {
 /* ── Admin sidebar ── */
 .admin-sidebar {
   position: relative;
-  background: linear-gradient(180deg, var(--brand-navy-dark) 0%, #0b1c36 100%);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.admin-sidebar::before {
-  content: "";
-  position: absolute;
-  inset-inline: 0;
-  top: 0;
-  height: 2px;
-  background: linear-gradient(to right, transparent, var(--brand-gold), transparent);
-  opacity: 0.6;
+  background:
+    radial-gradient(circle at 65% 78%, rgba(40, 91, 153, 0.22), transparent 30%),
+    linear-gradient(180deg, #07162d 0%, #061a35 56%, #071426 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .admin-sidebar-inner {
@@ -986,17 +1296,13 @@ textarea.field-input {
 }
 
 .admin-nav-link-active {
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--brand-gold) 16%, transparent),
-    rgba(255, 255, 255, 0.04)
-  );
+  background: rgba(255, 255, 255, 0.075);
   color: white;
-  box-shadow: inset 3px 0 0 var(--brand-gold);
+  box-shadow: inset 2px 0 0 #d7a929;
 }
 
 .admin-nav-link-active svg {
-  color: var(--brand-gold-light);
+  color: #e0b533;
 }
 
 .admin-nav-link-collapsed {
@@ -1015,8 +1321,8 @@ textarea.field-input {
 
 /* ── Top bar mobile + drawer ── */
 .admin-mobile-bar {
-  background: linear-gradient(180deg, var(--brand-navy-dark), var(--brand-navy));
-  border-bottom: 2px solid var(--brand-gold);
+  background: #0a0f14;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: var(--shadow-sm);
 }
 
@@ -1063,9 +1369,9 @@ textarea.field-input {
 }
 
 .public-site-header {
-  background: var(--brand-navy);
-  border-bottom: 3px solid var(--brand-gold);
-  box-shadow: var(--shadow-md);
+  background: #0a0f14;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: var(--shadow-sm);
 }
 
 .public-nav-link {
@@ -1073,8 +1379,9 @@ textarea.field-input {
 }
 
 .public-nav-link-active {
-  background: var(--brand-gold);
-  color: var(--brand-navy-dark);
+  background: var(--accent-bright);
+  color: white;
+  box-shadow: 0 6px 16px -6px var(--accent-shadow);
 }
 
 .public-nav-link-idle {
@@ -1113,8 +1420,7 @@ textarea.field-input {
 }
 
 .public-page-hero .public-breadcrumb-sep {
-  @apply text-xs;
-  color: rgba(255, 255, 255, 0.45);
+  @apply text-xs text-brand-text-light;
 }
 
 .public-page-intro .public-breadcrumb-sep {
@@ -1122,12 +1428,7 @@ textarea.field-input {
 }
 
 .public-page-hero .public-breadcrumb-link {
-  @apply text-xs font-medium transition-colors;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.public-page-hero .public-breadcrumb-link:hover {
-  color: white;
+  @apply text-xs font-medium text-brand-text-muted transition-colors hover:text-brand-text;
 }
 
 .public-page-intro .public-breadcrumb-link {
@@ -1135,8 +1436,7 @@ textarea.field-input {
 }
 
 .public-page-hero .public-breadcrumb-link-static {
-  @apply text-xs font-medium;
-  color: rgba(255, 255, 255, 0.7);
+  @apply text-xs font-medium text-brand-text-muted;
 }
 
 .public-page-intro .public-breadcrumb-link-static {
@@ -1145,7 +1445,7 @@ textarea.field-input {
 
 .public-page-hero .public-breadcrumb-current {
   @apply text-xs font-semibold;
-  color: var(--brand-gold-light);
+  color: var(--accent);
 }
 
 .public-page-intro .public-breadcrumb-current {
@@ -1157,7 +1457,7 @@ textarea.field-input {
 }
 
 .public-page-intro-title {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   @apply text-xl font-bold text-brand-navy-dark sm:text-2xl;
 }
 
@@ -1198,16 +1498,16 @@ textarea.field-input {
 }
 
 .booking-person-chip-selected {
-  border-color: var(--brand-navy);
-  background: var(--brand-navy);
+  border-color: var(--accent);
+  background: var(--accent);
   color: white;
 }
 
 .public-page-hero {
-  @apply mb-6 flex flex-col gap-4 rounded-xl px-5 py-4 sm:flex-row sm:items-end sm:justify-between sm:px-6 sm:py-5;
-  background: var(--brand-navy);
-  border-left: 4px solid var(--brand-gold);
-  box-shadow: var(--shadow-md);
+  @apply mb-6 flex flex-col gap-4 rounded-xl border px-5 py-4 sm:flex-row sm:items-end sm:justify-between sm:px-6 sm:py-5;
+  background: var(--brand-surface);
+  border-color: var(--brand-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .public-page-hero-main {
@@ -1219,22 +1519,23 @@ textarea.field-input {
 }
 
 .public-page-heading {
-  font-family: var(--font-cinzel), Georgia, serif;
-  @apply text-xl font-bold text-white sm:text-2xl;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+  @apply text-xl font-bold sm:text-2xl;
+  color: var(--brand-text);
 }
 
 .public-page-desc {
   @apply mt-1.5 text-sm leading-relaxed;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--brand-text-muted);
 }
 
 .public-section-title {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   @apply mb-4 text-sm font-semibold text-brand-navy-dark;
 }
 
 .public-card {
-  @apply overflow-hidden rounded-xl border bg-white;
+  @apply overflow-hidden rounded-2xl border bg-white;
   border-color: var(--brand-border);
   box-shadow: var(--shadow-md);
 }
@@ -1246,7 +1547,7 @@ textarea.field-input {
 }
 
 .public-card-title {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   @apply text-sm font-semibold text-brand-navy-dark;
 }
 
@@ -1285,8 +1586,8 @@ textarea.field-input {
 }
 
 .public-person-card-selected {
-  border-color: var(--brand-navy);
-  background: var(--brand-navy);
+  border-color: var(--accent);
+  background: var(--accent);
   color: white;
   box-shadow: var(--shadow-md);
 }
@@ -1296,7 +1597,7 @@ textarea.field-input {
 }
 
 .public-person-card-name {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   @apply mt-1 text-base font-semibold;
 }
 
@@ -1318,11 +1619,11 @@ textarea.field-input {
 }
 
 .public-slot-btn-selected {
-  border-color: var(--brand-gold);
-  background: #fdf6e8;
+  border-color: var(--accent);
+  background: var(--accent-muted);
   font-weight: 600;
-  color: var(--brand-navy-dark);
-  box-shadow: 0 0 0 2px rgba(212, 170, 74, 0.25);
+  color: var(--brand-text);
+  box-shadow: 0 0 0 2px var(--accent-ring);
 }
 
 .public-slot-btn-time {
@@ -1363,20 +1664,21 @@ textarea.field-input {
 
 /* ── Página pública — barra de contexto (compacta) ── */
 .week-context-bar {
-  @apply mb-6 flex flex-col gap-3 rounded-xl px-5 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:px-6;
-  background: var(--brand-navy);
-  border-left: 4px solid var(--brand-gold);
-  box-shadow: var(--shadow-md);
+  @apply mb-6 flex flex-col gap-3 rounded-xl border px-5 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:px-6;
+  background: var(--brand-surface);
+  border-color: var(--brand-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .week-context-bar-title {
-  font-family: var(--font-cinzel), Georgia, serif;
-  @apply text-base font-bold text-white sm:text-lg;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+  @apply text-base font-bold sm:text-lg;
+  color: var(--brand-text);
 }
 
 .week-context-bar-dates {
   @apply mt-0.5 text-sm capitalize;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--brand-text-muted);
 }
 
 .week-context-bar-actions {
@@ -1388,33 +1690,33 @@ textarea.field-input {
 }
 
 .week-context-btn-primary {
-  background: var(--brand-gold);
-  color: var(--brand-navy-dark);
+  background: linear-gradient(135deg, var(--accent-from), var(--accent-to));
+  color: var(--accent-text);
 }
 
 .week-context-btn-primary:hover {
-  background: var(--brand-gold-light);
+  filter: brightness(1.06);
 }
 
 .week-context-btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: var(--brand-surface);
+  color: var(--brand-text);
+  border: 1px solid var(--brand-border-strong);
 }
 
 .week-context-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--row-hover);
 }
 
 .week-context-btn-ghost {
   background: transparent;
-  color: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: var(--brand-text-muted);
+  border: 1px solid var(--brand-border);
 }
 
 .week-context-btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
+  background: var(--row-hover);
+  color: var(--brand-text);
 }
 
 /* Título de seção — estilo boletim, não dashboard */
@@ -1426,29 +1728,30 @@ textarea.field-input {
 
 .panel-title-bar-accent {
   @apply h-8 w-1 shrink-0 rounded-full;
-  background: var(--brand-gold);
+  background: var(--accent);
 }
 
 .panel-title-bar-text {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   @apply text-sm font-semibold text-brand-navy-dark;
 }
 
 .public-page-header {
-  @apply mb-6 rounded-xl px-5 py-4;
-  background: var(--brand-navy);
-  border-left: 4px solid var(--brand-gold);
-  box-shadow: var(--shadow-md);
+  @apply mb-6 rounded-xl border px-5 py-4;
+  background: var(--brand-surface);
+  border-color: var(--brand-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .public-page-header h1 {
-  font-family: var(--font-cinzel), Georgia, serif;
-  @apply text-xl font-bold text-white sm:text-2xl;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+  @apply text-xl font-bold sm:text-2xl;
+  color: var(--brand-text);
 }
 
 .public-page-header p {
   @apply mt-1.5 text-sm;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--brand-text-muted);
 }
 
 /* ── Semana home — layout full width ── */
@@ -1505,18 +1808,20 @@ textarea.field-input {
 }
 
 .semana-rail-panel-head {
-  @apply px-4 py-3;
-  background: var(--brand-navy);
-  border-bottom: 2px solid var(--brand-gold);
+  @apply border-b px-4 py-3;
+  background: var(--brand-surface);
+  border-color: var(--brand-border);
 }
 
 .semana-rail-panel-head-label {
-  @apply text-[10px] font-bold uppercase tracking-widest text-brand-gold-light;
+  @apply text-[10px] font-bold uppercase tracking-widest;
+  color: var(--accent);
 }
 
 .semana-rail-panel-head-value {
-  font-family: var(--font-cinzel), Georgia, serif;
-  @apply mt-0.5 text-sm font-semibold text-white;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+  @apply mt-0.5 text-sm font-semibold;
+  color: var(--brand-text);
 }
 
 .semana-rail-panel-body {
@@ -1641,8 +1946,8 @@ textarea.field-input {
 }
 
 .calendario-compact-item-today {
-  background: rgba(27, 54, 93, 0.06);
-  box-shadow: inset 3px 0 0 var(--brand-gold);
+  background: var(--accent-hover);
+  box-shadow: inset 3px 0 0 var(--accent);
 }
 
 .calendario-compact-date {
@@ -1651,7 +1956,7 @@ textarea.field-input {
 }
 
 .calendario-compact-day {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   @apply text-base font-bold leading-none text-white;
 }
 
@@ -1701,9 +2006,9 @@ textarea.field-input {
 }
 
 .ala-day-row-today {
-  border-color: var(--brand-navy);
-  background: rgba(27, 54, 93, 0.04);
-  box-shadow: inset 3px 0 0 var(--brand-gold);
+  border-color: var(--accent);
+  background: var(--accent-hover);
+  box-shadow: inset 3px 0 0 var(--accent);
 }
 
 .admin-page-header {
@@ -1713,7 +2018,7 @@ textarea.field-input {
 }
 
 .admin-page-header-title {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   color: var(--brand-navy-dark);
 }
 
@@ -1751,10 +2056,10 @@ textarea.field-input {
 
 /* ── Calendário de entrevistas (semanal) ── */
 .entrevista-cal-toolbar {
-  @apply mb-3 flex flex-col gap-2.5 rounded-xl px-4 py-3 sm:flex-row sm:items-center sm:justify-between;
-  background: linear-gradient(135deg, var(--brand-navy) 0%, #152a47 100%);
-  border-left: 4px solid var(--brand-gold);
-  box-shadow: var(--shadow-md);
+  @apply mb-3 flex flex-col gap-2.5 rounded-xl border px-4 py-3 sm:flex-row sm:items-center sm:justify-between;
+  background: var(--brand-surface);
+  border-color: var(--brand-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .entrevista-cal-toolbar-main {
@@ -1762,13 +2067,14 @@ textarea.field-input {
 }
 
 .entrevista-cal-month {
-  font-family: var(--font-cinzel), Georgia, serif;
-  @apply text-lg font-bold capitalize text-white sm:text-xl;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+  @apply text-lg font-bold capitalize sm:text-xl;
+  color: var(--brand-text);
 }
 
 .entrevista-cal-range {
   @apply mt-0.5 text-sm;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--brand-text-muted);
 }
 
 .entrevista-cal-stats {
@@ -1780,43 +2086,43 @@ textarea.field-input {
 }
 
 .entrevista-cal-stat-available {
-  background: rgba(34, 197, 94, 0.2);
-  color: #bbf7d0;
-  border: 1px solid rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.1);
+  color: #15803d;
+  border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
 .entrevista-cal-stat-days {
-  background: rgba(212, 170, 74, 0.2);
-  color: var(--brand-gold-light);
-  border: 1px solid rgba(212, 170, 74, 0.35);
+  background: var(--accent-muted);
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
 }
 
 .entrevista-cal-stat-booked {
-  background: rgba(255, 255, 255, 0.12);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: var(--brand-cream-warm);
+  color: var(--brand-text-muted);
+  border: 1px solid var(--brand-border);
 }
 
 .entrevista-cal-nav {
   @apply flex shrink-0 flex-wrap items-center gap-2 rounded-xl border px-2 py-1.5;
-  border-color: rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--brand-border);
+  background: var(--brand-cream-warm);
 }
 
 .entrevista-cal-nav-btn {
   @apply rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors disabled:opacity-40;
-  color: white;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--brand-text);
+  background: white;
+  border: 1px solid var(--brand-border);
 }
 
 .entrevista-cal-nav-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--row-hover);
 }
 
 .entrevista-cal-nav-label {
   @apply px-2 text-xs font-semibold tabular-nums;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--brand-text-muted);
 }
 
 .entrevista-cal-grid {
@@ -1850,8 +2156,8 @@ textarea.field-input {
 }
 
 .entrevista-cal-day-today {
-  border-color: var(--brand-gold);
-  box-shadow: 0 0 0 2px rgba(212, 170, 74, 0.35);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-ring);
 }
 
 .entrevista-cal-day-full {
@@ -1893,8 +2199,8 @@ textarea.field-input {
 }
 
 .entrevista-cal-day-today .entrevista-cal-day-head {
-  background: linear-gradient(135deg, var(--brand-navy) 0%, #152a47 100%);
-  border-bottom-color: var(--brand-gold);
+  background: var(--accent);
+  border-bottom-color: var(--accent);
 }
 
 .entrevista-cal-day-available .entrevista-cal-day-head {
@@ -1904,11 +2210,11 @@ textarea.field-input {
 
 .entrevista-cal-day-month {
   @apply text-[9px] font-bold uppercase tracking-widest;
-  color: var(--brand-gold-dark);
+  color: var(--brand-text-light);
 }
 
 .entrevista-cal-day-today .entrevista-cal-day-month {
-  color: var(--brand-gold-light);
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .entrevista-cal-day-weekday {
@@ -1917,11 +2223,11 @@ textarea.field-input {
 }
 
 .entrevista-cal-day-today .entrevista-cal-day-weekday {
-  color: var(--brand-gold-light);
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .entrevista-cal-day-num {
-  font-family: var(--font-cinzel), Georgia, serif;
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   @apply mt-0.5 text-lg font-bold leading-none;
   color: var(--brand-navy-dark);
 }
@@ -1964,18 +2270,18 @@ textarea.field-input {
 }
 
 .entrevista-cal-slot-free:hover {
-  border-color: var(--brand-gold);
-  background: #fdf6e8;
-  color: var(--brand-navy-dark);
+  border-color: var(--accent);
+  background: var(--accent-muted);
+  color: var(--brand-text);
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
 
 .entrevista-cal-slot-selected {
-  border-color: var(--brand-gold) !important;
-  background: linear-gradient(135deg, var(--brand-gold) 0%, #e8c468 100%) !important;
-  color: var(--brand-navy-dark) !important;
-  box-shadow: 0 0 0 2px rgba(212, 170, 74, 0.35);
+  border-color: var(--accent) !important;
+  background: var(--accent) !important;
+  color: white !important;
+  box-shadow: 0 0 0 2px var(--accent-ring);
   transform: translateY(-1px);
 }
 
@@ -1997,13 +2303,13 @@ textarea.field-input {
 .entrevista-cal-slot-booked {
   @apply cursor-default gap-1 border;
   border-color: var(--brand-navy);
-  background: linear-gradient(135deg, var(--brand-navy) 0%, #152a47 100%);
+  background: var(--brand-navy);
   color: white;
 }
 
 .entrevista-cal-slot-booked-online {
   border-color: #0e7490;
-  background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+  background: #0891b2;
 }
 
 .entrevista-cal-slot-time {
@@ -2083,8 +2389,8 @@ textarea.field-input {
 }
 
 .entrevista-cal-legend-dot-selected {
-  border-color: var(--brand-gold);
-  background: linear-gradient(135deg, var(--brand-gold) 0%, #e8c468 100%);
+  border-color: var(--accent);
+  background: var(--accent);
 }
 
 .entrevista-cal-legend-dot-taken {
@@ -2154,8 +2460,8 @@ textarea.field-input {
 }
 
 .modo-picker-chip-active.modo-picker-chip-presencial {
-  border-color: var(--brand-navy);
-  background: var(--brand-navy);
+  border-color: var(--accent);
+  background: var(--accent);
   color: white;
 }
 

@@ -2,12 +2,6 @@ import { ReactNode } from "react";
 
 type Accent = "navy" | "gold" | "cream";
 
-const accentIcons: Record<Accent, string> = {
-  navy: "◆",
-  gold: "✦",
-  cream: "◇",
-};
-
 interface FormSectionProps {
   title: string;
   subtitle?: string;
@@ -18,15 +12,12 @@ interface FormSectionProps {
 export function FormSection({
   title,
   subtitle,
-  accent = "navy",
   children,
 }: FormSectionProps) {
   return (
     <section className="form-section">
       <div className="form-section-header">
-        <div className="form-section-tab">
-          <span className="form-section-tab-icon">{accentIcons[accent]}</span>
-        </div>
+        <div className="form-section-tab" />
         <div className="form-section-heading">
           <p className="text-eyebrow">Seção</p>
           <h3 className="form-section-title">{title}</h3>
