@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { format } from "date-fns";
 import { auth } from "@/auth";
 import { AgendaForm } from "@/components/AgendaForm";
 import { prisma } from "@/lib/db";
+import { formatCalendarDate } from "@/lib/date-utils";
 import { UserRole } from "@/generated/prisma/client";
 
 export const dynamic = "force-dynamic";
@@ -35,13 +35,13 @@ export default async function AgendaDetailPage({ params }: PageProps) {
         <span aria-hidden="true">‹</span>
         Agendas Sacramentais
         <span aria-hidden="true">/</span>
-        <strong>Agenda de {format(agenda.data, "dd/MM/yyyy")}</strong>
+        <strong>Agenda de {formatCalendarDate(agenda.data, "dd/MM/yyyy")}</strong>
       </Link>
       <AgendaForm
         mode="edit"
         initialData={{
           id: agenda.id,
-          data: format(agenda.data, "yyyy-MM-dd"),
+          data: formatCalendarDate(agenda.data, "yyyy-MM-dd"),
           tipo: agenda.tipo,
           frequencia: agenda.frequencia,
           presididaPor: agenda.presididaPor ?? "",
@@ -62,6 +62,7 @@ export default async function AgendaDetailPage({ params }: PageProps) {
           oracaoEncerramento: agenda.oracaoEncerramento ?? "",
           chamados: agenda.chamados.map((item) => ({
             tipo: item.tipo,
+            organizacao: item.organizacao,
             pessoa: item.pessoa,
             chamado: item.chamado,
           })),

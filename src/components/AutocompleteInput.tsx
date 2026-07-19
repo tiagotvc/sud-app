@@ -12,6 +12,8 @@ interface AutocompleteInputProps {
   placeholder?: string;
   hint?: string;
   variant?: FieldVariant;
+  /** When true, only values that already exist can be kept — no new entries are created. */
+  restrict?: boolean;
 }
 
 function parseHymnSuggestion(option: string): { number: string; title: string } {
@@ -30,11 +32,13 @@ export function AutocompleteInput({
   placeholder,
   hint,
   variant = "default",
+  restrict = false,
 }: AutocompleteInputProps) {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const valueAtFocusRef = useRef(value);
   const isHymn = variant === "hymn";
 
   const fetchSuggestions = useCallback(
@@ -72,6 +76,7 @@ export function AutocompleteInput({
   }
 
   async function handleFocus() {
+    valueAtFocusRef.current = value;
     setOpen(true);
     await fetchSuggestions(value);
   }
@@ -84,6 +89,13 @@ export function AutocompleteInput({
   async function handleBlur() {
     const trimmed = value.trim();
     if (!trimmed) return;
+
+    if (restrict) {
+      if (trimmed === valueAtFocusRef.current.trim()) return;
+      const match = suggestions.find((option) => option.toLowerCase() === trimmed.toLowerCase());
+      onChange(match ?? "");
+      return;
+    }
 
     if (apiPath === "/api/pessoas") {
       await fetch("/api/pessoas", {
@@ -122,7 +134,7 @@ export function AutocompleteInput({
   );
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className={`relative ${open ? "z-30" : ""}`}>
       <label className={isHymn ? "hymn-label field-label" : "field-label"}>
         {isHymn && <span className="hymn-label-icon">♪</span>}
         {label}

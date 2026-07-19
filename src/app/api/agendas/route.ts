@@ -37,21 +37,29 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Data é obrigatória" }, { status: 400 });
   }
 
-  await syncMasterData(body);
+  try {
+    await syncMasterData(body);
 
-  const agenda = await prisma.agenda.create({
-    data: {
-      ...buildAgendaData(body),
-      chamados: {
-        create: buildChamadosData(body.chamados),
+    const agenda = await prisma.agenda.create({
+      data: {
+        ...buildAgendaData(body),
+        chamados: {
+          create: buildChamadosData(body.chamados),
+        },
       },
-    },
-    include: {
-      chamados: { orderBy: { ordem: "asc" } },
-    },
-  });
+      include: {
+        chamados: { orderBy: { ordem: "asc" } },
+      },
+    });
 
-  revalidateAgendaPages(agenda.id);
+    revalidateAgendaPages(agenda.id);
 
-  return NextResponse.json(agenda, { status: 201 });
+    return NextResponse.json(agenda, { status: 201 });
+  } catch (error) {
+    console.error("Falha ao criar agenda", error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Não foi possível salvar a agenda." },
+      { status: 500 },
+    );
+  }
 }

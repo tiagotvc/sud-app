@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { formatCalendarDate } from "@/lib/date-utils";
+import { OrganizacaoChamado, organizacaoLabel, parseAnuncios, parseAutoridades } from "@/lib/types";
 
 export interface AgendaPresentationData {
   id: string;
@@ -27,6 +28,7 @@ export interface AgendaPresentationData {
   oracaoEncerramento: string | null;
   chamados: {
     tipo: "APOIO" | "DESOBRIGACAO";
+    organizacao: OrganizacaoChamado | null;
     pessoa: string;
     chamado: string;
   }[];
@@ -34,6 +36,12 @@ export interface AgendaPresentationData {
 
 interface AgendaPresentationProps {
   agenda: AgendaPresentationData;
+}
+
+function formatAnuncioDate(value: string): string {
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return value;
+  return `${match[3]}/${match[2]}`;
 }
 
 function parseHymn(value: string): { number: string; title: string } {
@@ -60,6 +68,29 @@ function Field({
       <dd className={hasValue ? "presentation-value-name" : "presentation-value-empty"}>
         {hasValue ? value : "—"}
       </dd>
+    </div>
+  );
+}
+
+function AutoridadesField({ label, value }: { label: string; value: string | null | undefined }) {
+  const autoridades = parseAutoridades(value).filter((item) => item.cargo || item.nome);
+  const hasValue = autoridades.length > 0;
+
+  return (
+    <div className={`presentation-field ${!hasValue ? "presentation-field-empty" : ""}`}>
+      <dt className="presentation-label">{label}</dt>
+      {hasValue ? (
+        <dd className="mt-1 space-y-1">
+          {autoridades.map((item, index) => (
+            <div key={index} className="presentation-autoridade">
+              {item.cargo && <span className="presentation-autoridade-cargo">{item.cargo}</span>}
+              {item.nome && <span className="presentation-value-name">{item.nome}</span>}
+            </div>
+          ))}
+        </dd>
+      ) : (
+        <dd className="presentation-value-empty">—</dd>
+      )}
     </div>
   );
 }
@@ -101,56 +132,66 @@ function HymnField({
 }
 
 export function AgendaPresentation({ agenda }: AgendaPresentationProps) {
-  const dayLabel = format(agenda.data, "EEE", { locale: ptBR }).toUpperCase();
-  const dayNumber = format(agenda.data, "d");
+  const dayLabel = formatCalendarDate(agenda.data, "EEE", { locale: ptBR }).toUpperCase();
+  const dayNumber = formatCalendarDate(agenda.data, "d");
   const isTestimonyMeeting = agenda.tipo === "TESTEMUNHO";
   const releases = agenda.chamados.filter((item) => item.tipo === "DESOBRIGACAO");
   const sustainings = agenda.chamados.filter((item) => item.tipo === "APOIO");
+  const anuncios = parseAnuncios(agenda.anuncios);
 
   return (
     <div className="presentation-root">
       <header className="presentation-header">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="flex items-start gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
             <div className="ala-day-sidebar rounded-md">
               <span className="ala-day-sidebar-label">{dayLabel}</span>
               <span className="ala-day-sidebar-value">{dayNumber}</span>
             </div>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#f0ddb8]">
+              <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#f0ddb8]">
                 A Igreja de Jesus Cristo dos Santos dos Últimos Dias
               </p>
-              <h1 className="font-display mt-2 text-3xl font-bold text-white md:text-4xl">
+              <h1 className="font-display mt-0.5 text-xl font-bold text-white md:text-2xl">
                 Agenda Sacramental
+                <span className="font-script ml-2 text-base font-normal text-[#f0ddb8] md:text-lg">
+                  Ala Novo Hamburgo
+                </span>
               </h1>
-              <p className="font-script mt-1 text-2xl text-[#f0ddb8]">Ala Novo Hamburgo</p>
-              <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-brand-text-muted">
+              <p className="mt-1.5 inline-flex items-center rounded-full border border-white/20 bg-white/5 px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-brand-text-muted">
                 {isTestimonyMeeting ? "Reunião de testemunhos" : "Reunião dominical"}
               </p>
             </div>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <Link href={`/bispado/agendas-sacramentais/${agenda.id}`} className="presentation-btn">
-              Editar
-            </Link>
-            <Link href="/bispado/agendas-sacramentais" className="presentation-btn">
-              Sair
-            </Link>
-          </div>
-        </div>
-
-        <div className="mt-6 flex flex-wrap gap-8 border-t border-white/20 pt-4">
-          <div>
-            <p className="presentation-header-stat-label">Data</p>
-            <p className="presentation-header-stat-value">
-              {format(agenda.data, "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })}
-            </p>
-          </div>
-          <div>
-            <p className="presentation-header-stat-label">Frequência</p>
-            <p className="presentation-header-stat-value-gold">
-              {agenda.frequencia != null ? agenda.frequencia : "—"}
-            </p>
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-5 md:border-r md:border-white/20 md:pr-4">
+              <div>
+                <p className="presentation-header-stat-label">Data</p>
+                <p className="presentation-header-stat-value">
+                  {formatCalendarDate(agenda.data, "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                </p>
+              </div>
+              <div>
+                <p className="presentation-header-stat-label">Frequência</p>
+                <p className="presentation-header-stat-value-gold">
+                  {agenda.frequencia != null ? agenda.frequencia : "—"}
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Link href={`/bispado/agendas-sacramentais/${agenda.id}`} className="presentation-btn">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487z" />
+                </svg>
+                Editar
+              </Link>
+              <Link href="/bispado/agendas-sacramentais" className="presentation-btn">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M18 12H9m9 0-3-3m3 3-3 3" />
+                </svg>
+                Sair
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -158,29 +199,56 @@ export function AgendaPresentation({ agenda }: AgendaPresentationProps) {
       <div className="presentation-body">
         <section className="presentation-section">
           <h2 className="presentation-section-title">Abertura</h2>
-          <dl className="presentation-grid">
+          <dl className="presentation-grid-2col">
             <Field label="Presidida por" value={agenda.presididaPor} />
             <Field label="Dirigida por" value={agenda.dirigidaPor} />
-            <Field label="Reconhecimento de autoridades" value={agenda.reconhecimentoAutoridades} />
+            <AutoridadesField label="Reconhecimento de autoridades" value={agenda.reconhecimentoAutoridades} />
             <Field label="Visitantes ou novos membros" value={agenda.reconhecimentoVisitantes} />
-            <Field label="Regente" value={agenda.regente} />
-            <Field label="Organista" value={agenda.organista} />
-            <HymnField label="Hino de abertura" value={agenda.hinoAbertura} />
-            <Field label="1ª Oração" value={agenda.primeiraOracao} />
           </dl>
-          <div className="mt-4">
+          <div className="mt-5">
             <h3 className="presentation-label mb-2">Anúncios</h3>
-            {agenda.anuncios?.trim() ? (
-              <div
-                className="presentation-announcements prose prose-sm max-w-none"
-                dangerouslySetInnerHTML={{ __html: agenda.anuncios }}
-              />
+            {anuncios.length > 0 ? (
+              <ul className="presentation-anuncios-list">
+                {anuncios.map((item, index) => (
+                  <li key={index} className="presentation-anuncio">
+                    <span className="presentation-anuncio-icon" aria-hidden>
+                      📣
+                    </span>
+                    <div className="presentation-anuncio-body">
+                      <span className="presentation-anuncio-texto">{item.texto}</span>
+                      {(item.data || item.hora || item.local) && (
+                        <div className="presentation-anuncio-meta">
+                          {(item.data || item.hora) && (
+                            <span className="presentation-anuncio-when">
+                              <span aria-hidden>🗓️</span>
+                              {[item.data && formatAnuncioDate(item.data), item.hora]
+                                .filter(Boolean)
+                                .join(" · ")}
+                            </span>
+                          )}
+                          {item.local && (
+                            <span className="presentation-anuncio-local">
+                              <span aria-hidden>📍</span> {item.local}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
             ) : (
               <p className="presentation-field presentation-field-empty presentation-value-empty px-4 py-3">
                 Nenhum anúncio registrado
               </p>
             )}
           </div>
+          <dl className="presentation-grid mt-5">
+            <Field label="Regente" value={agenda.regente} />
+            <Field label="Organista" value={agenda.organista} />
+            <HymnField label="Hino de abertura" value={agenda.hinoAbertura} />
+            <Field label="1ª Oração" value={agenda.primeiraOracao} />
+          </dl>
         </section>
 
         <section className="presentation-section">
@@ -196,7 +264,14 @@ export function AgendaPresentation({ agenda }: AgendaPresentationProps) {
                     {releases.map((item, index) => (
                       <li key={`${item.pessoa}-${index}`} className="presentation-chamado">
                         <strong>{item.pessoa}</strong>
-                        <span>{item.chamado}</span>
+                        <span className="presentation-chamado-meta">
+                          <span className="presentation-chamado-cargo">{item.chamado}</span>
+                          {organizacaoLabel(item.organizacao) && (
+                            <span className="presentation-chamado-org">
+                              {organizacaoLabel(item.organizacao)}
+                            </span>
+                          )}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -209,7 +284,14 @@ export function AgendaPresentation({ agenda }: AgendaPresentationProps) {
                     {sustainings.map((item, index) => (
                       <li key={`${item.pessoa}-${index}`} className="presentation-chamado">
                         <strong>{item.pessoa}</strong>
-                        <span>{item.chamado}</span>
+                        <span className="presentation-chamado-meta">
+                          <span className="presentation-chamado-cargo">{item.chamado}</span>
+                          {organizacaoLabel(item.organizacao) && (
+                            <span className="presentation-chamado-org">
+                              {organizacaoLabel(item.organizacao)}
+                            </span>
+                          )}
+                        </span>
                       </li>
                     ))}
                   </ul>

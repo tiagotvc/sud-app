@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { redirect } from "next/navigation";
 import { AgendaPeriodFilter } from "@/components/agenda/AgendaPeriodFilter";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { UserRole } from "@/generated/prisma/client";
+import { formatCalendarDate } from "@/lib/date-utils";
 
 export const dynamic = "force-dynamic";
 
@@ -121,9 +121,9 @@ export default async function AgendasSacramentaisPage({
           <p className="text-section-label">Lista de agendas</p>
           <div className="agenda-list">
             {agendas.map((agenda) => {
-              const dayLabel = format(agenda.data, "EEEE", { locale: ptBR }).toUpperCase();
-              const dayNumber = format(agenda.data, "d");
-              const monthYear = format(agenda.data, "MMM yyyy", { locale: ptBR }).toUpperCase();
+              const dayLabel = formatCalendarDate(agenda.data, "EEEE", { locale: ptBR }).toUpperCase();
+              const dayNumber = formatCalendarDate(agenda.data, "d");
+              const monthYear = formatCalendarDate(agenda.data, "MMM yyyy", { locale: ptBR }).toUpperCase();
 
               return (
                 <div key={agenda.id} className="ala-day-row">
@@ -143,7 +143,7 @@ export default async function AgendasSacramentaisPage({
                           : "Agenda Sacramental"}
                       </p>
                       <h2 className="agenda-row-title">
-                        {format(agenda.data, "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                        {formatCalendarDate(agenda.data, "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })}
                       </h2>
                       <dl className="agenda-row-people">
                         <div><dt>Dirigida por</dt><dd>{agenda.dirigidaPor || "—"}</dd></div>

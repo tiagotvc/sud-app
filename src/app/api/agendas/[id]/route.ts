@@ -51,28 +51,36 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ error: "Agenda não encontrada" }, { status: 404 });
   }
 
-  await syncMasterData(body);
+  try {
+    await syncMasterData(body);
 
-  const agenda = await prisma.$transaction(async (tx) => {
-    await tx.agendaChamado.deleteMany({ where: { agendaId: id } });
+    const agenda = await prisma.$transaction(async (tx) => {
+      await tx.agendaChamado.deleteMany({ where: { agendaId: id } });
 
-    return tx.agenda.update({
-      where: { id },
-      data: {
-        ...buildAgendaData(body),
-        chamados: {
-          create: buildChamadosData(body.chamados),
+      return tx.agenda.update({
+        where: { id },
+        data: {
+          ...buildAgendaData(body),
+          chamados: {
+            create: buildChamadosData(body.chamados),
+          },
         },
-      },
-      include: {
-        chamados: { orderBy: { ordem: "asc" } },
-      },
+        include: {
+          chamados: { orderBy: { ordem: "asc" } },
+        },
+      });
     });
-  });
 
-  revalidateAgendaPages(id);
+    revalidateAgendaPages(id);
 
-  return NextResponse.json(agenda);
+    return NextResponse.json(agenda);
+  } catch (error) {
+    console.error("Falha ao atualizar agenda", error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Não foi possível salvar a agenda." },
+      { status: 500 },
+    );
+  }
 }
 
 export async function DELETE(_request: NextRequest, { params }: RouteParams) {

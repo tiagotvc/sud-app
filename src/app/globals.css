@@ -898,8 +898,23 @@ textarea.field-input {
 }
 
 .agenda-present-button,
-.agenda-edit-button {
+.agenda-edit-button,
+.agenda-undo-button {
   @apply inline-flex h-9 items-center justify-center gap-2 rounded-md px-4 text-xs font-semibold transition-colors;
+}
+
+.agenda-undo-button {
+  @apply border bg-white;
+  border-color: var(--brand-border-strong);
+  color: #20334e;
+}
+
+.agenda-undo-button:hover:not(:disabled) {
+  background: #f8fafc;
+}
+
+.agenda-undo-button:disabled {
+  @apply cursor-not-allowed opacity-40;
 }
 
 .agenda-present-button {
@@ -1047,12 +1062,12 @@ textarea.field-input {
 
 /* ── Form sections (calendar day-row inspired) ── */
 .form-section {
-  @apply overflow-hidden rounded-md border bg-white shadow-sm;
+  @apply rounded-md border bg-white shadow-sm;
   border-color: var(--brand-border);
 }
 
 .form-section-header {
-  @apply flex items-stretch border-b;
+  @apply flex items-stretch overflow-hidden rounded-t-md border-b;
   border-color: var(--brand-border);
 }
 
@@ -1119,7 +1134,7 @@ textarea.field-input {
 }
 
 .presentation-header {
-  @apply border-b px-6 py-6 md:px-10 md:py-8;
+  @apply border-b px-5 py-3 md:px-8 md:py-4;
   border-color: var(--brand-border);
   background: var(--brand-surface);
 }
@@ -1136,7 +1151,7 @@ textarea.field-input {
 }
 
 .presentation-body {
-  @apply mx-auto w-full max-w-5xl px-6 py-8 md:px-10;
+  @apply mx-auto w-full max-w-5xl px-4 py-6 md:px-10 md:py-8;
 }
 
 .presentation-section {
@@ -1151,7 +1166,11 @@ textarea.field-input {
 }
 
 .presentation-grid {
-  @apply grid gap-3 md:grid-cols-2;
+  @apply grid gap-3 sm:grid-cols-2 md:gap-4 xl:grid-cols-3;
+}
+
+.presentation-grid-2col {
+  @apply grid gap-3 sm:grid-cols-2 md:gap-4;
 }
 
 .presentation-header-stat-label {
@@ -1172,7 +1191,7 @@ textarea.field-input {
 }
 
 .presentation-field {
-  @apply rounded-md border px-4 py-3.5;
+  @apply rounded-lg border px-4 py-3.5 transition-colors md:px-5 md:py-4;
   border-color: var(--brand-border);
   background: var(--brand-surface);
 }
@@ -1184,7 +1203,7 @@ textarea.field-input {
 
 .presentation-value-name {
   font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
-  @apply text-lg font-semibold;
+  @apply text-lg font-semibold md:text-xl;
   color: var(--brand-navy-dark);
 }
 
@@ -1198,9 +1217,10 @@ textarea.field-input {
 }
 
 .presentation-hymn {
-  @apply border-l-[3px] bg-white md:col-span-2;
+  @apply border-l-[3px] bg-white sm:col-span-2 xl:col-span-3;
   border-color: var(--brand-border);
   border-left-color: var(--brand-gold);
+  background: linear-gradient(90deg, var(--brand-gold-glow) 0%, transparent 22%), white;
 }
 
 .presentation-hymn-empty {
@@ -2676,7 +2696,7 @@ textarea.field-input {
 }
 
 .agenda-editor .form-section-header {
-  @apply min-h-0;
+  @apply min-h-0 rounded-t-lg;
   background: #fbfcfe;
 }
 
@@ -2850,7 +2870,7 @@ textarea.field-input {
 /* ── Chamados estruturados + correções do modo apresentar ── */
 .agenda-chamado-editor-row {
   @apply grid gap-3 rounded-lg border p-4;
-  grid-template-columns: 140px minmax(0, 1fr) minmax(0, 1fr) auto;
+  grid-template-columns: 130px 180px minmax(0, 1fr) minmax(0, 1fr) auto;
   border-color: var(--brand-border);
   background: #f8fafc;
 }
@@ -2860,11 +2880,77 @@ textarea.field-input {
   color: #17365f;
 }
 
+.agenda-autoridade-editor-row {
+  @apply grid gap-3 rounded-lg border p-4;
+  grid-template-columns: 220px minmax(0, 1fr) auto;
+  border-color: var(--brand-border);
+  background: #f8fafc;
+}
+
+.agenda-anuncio-editor-row {
+  @apply grid gap-3 rounded-lg border p-4;
+  grid-template-columns: 130px 100px minmax(0, 1.6fr) minmax(0, 1fr) auto;
+  border-color: var(--brand-border);
+  background: #f8fafc;
+}
+
+.presentation-anuncios-list {
+  @apply space-y-2.5;
+}
+
+.presentation-anuncio {
+  @apply flex items-start gap-3 rounded-xl border px-4 py-3.5 transition-shadow md:px-5 md:py-4;
+  border-color: var(--brand-border);
+  background: linear-gradient(135deg, white 0%, #fbfaf6 100%);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.presentation-anuncio-icon {
+  @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm;
+  background: var(--brand-gold-glow);
+}
+
+.presentation-anuncio-body {
+  @apply flex min-w-0 flex-1 flex-col gap-1.5;
+}
+
+.presentation-anuncio-texto {
+  @apply text-sm font-semibold leading-snug md:text-base;
+  color: var(--brand-text);
+}
+
+.presentation-anuncio-meta {
+  @apply flex flex-wrap items-center gap-2;
+}
+
+.presentation-anuncio-when {
+  @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold tabular-nums;
+  background: var(--brand-gold-glow);
+  color: var(--brand-gold-dark);
+}
+
+.presentation-anuncio-local {
+  @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold;
+  background: var(--brand-cream-warm);
+  color: var(--brand-navy);
+}
+
+.presentation-autoridade {
+  @apply flex flex-wrap items-baseline gap-x-2;
+}
+
+.presentation-autoridade-cargo {
+  @apply rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide;
+  background: var(--brand-gold-glow);
+  color: var(--brand-gold-dark);
+}
+
 .presentation-root {
-  background: #f4f7fb;
+  background: #eef2f8;
 }
 
 .presentation-header {
+  position: relative;
   border-bottom: 3px solid #d4a72c;
   background:
     radial-gradient(circle at 78% 18%, rgba(50, 100, 158, 0.28), transparent 32%),
@@ -2873,12 +2959,22 @@ textarea.field-input {
 }
 
 .presentation-header > div {
-  @apply mx-auto w-full max-w-5xl;
+  @apply mx-auto w-full max-w-6xl;
 }
 
 .presentation-header .ala-day-sidebar {
+  @apply h-11 w-11 shrink-0 px-1 py-1 md:h-12 md:w-12;
   background: rgba(3, 16, 34, 0.65);
   border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 0 0 1px rgba(212, 136, 10, 0.15);
+}
+
+.presentation-header .ala-day-sidebar-label {
+  @apply text-[7px];
+}
+
+.presentation-header .ala-day-sidebar-value {
+  @apply mt-0 text-sm md:text-base;
 }
 
 .presentation-header .text-brand-text-muted {
@@ -2886,6 +2982,7 @@ textarea.field-input {
 }
 
 .presentation-btn {
+  @apply gap-1.5 px-3 py-1.5 text-xs font-semibold shadow-sm md:px-4 md:py-2 md:text-sm;
   border-color: rgba(255, 255, 255, 0.28);
   background: rgba(255, 255, 255, 0.1);
   color: white;
@@ -2897,26 +2994,40 @@ textarea.field-input {
   background: rgba(255, 255, 255, 0.18);
 }
 
+.presentation-btn svg {
+  @apply h-3.5 w-3.5 md:h-4 md:w-4;
+}
+
 .presentation-header-stat-label {
+  @apply text-[9px];
   color: rgba(255, 255, 255, 0.62);
 }
 
 .presentation-header-stat-value {
+  @apply mt-0 text-xs md:text-sm;
   color: white;
 }
 
 .presentation-header-stat-value-gold {
+  @apply mt-0 text-base md:text-lg;
   color: #f0c44d;
 }
 
 .presentation-body {
-  @apply max-w-5xl;
+  @apply max-w-6xl space-y-5 md:space-y-6;
 }
 
 .presentation-section {
-  @apply rounded-lg border bg-white p-5 md:p-6;
+  @apply relative overflow-hidden rounded-2xl border bg-white p-5 md:p-7;
   border-color: var(--brand-border);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 10px 24px -20px rgba(15, 23, 42, 0.25);
+}
+
+.presentation-section::before {
+  content: "";
+  @apply absolute inset-x-0 top-0 h-1;
+  background: linear-gradient(90deg, var(--brand-navy) 0%, var(--brand-gold) 100%);
+  opacity: 0.85;
 }
 
 .presentation-section:last-child {
@@ -2924,11 +3035,21 @@ textarea.field-input {
 }
 
 .presentation-section-title {
+  @apply -mx-5 -mt-5 mb-5 flex items-center gap-2.5 border-b px-5 py-3.5 text-xs font-extrabold tracking-[0.18em] md:-mx-7 md:-mt-7 md:mb-6 md:px-7 md:py-4 md:text-sm;
+  border-color: var(--brand-border);
+  background: linear-gradient(90deg, #f7f9fc 0%, #fdfaf2 100%);
   color: #0b2f5b;
 }
 
+.presentation-section-title::before {
+  content: "";
+  @apply h-2.5 w-2.5 shrink-0 rounded-full;
+  background: linear-gradient(135deg, var(--brand-gold) 0%, var(--brand-gold-dark) 100%);
+  box-shadow: 0 0 0 4px var(--brand-gold-glow);
+}
+
 .presentation-field-empty {
-  background: #f1f5f9;
+  background: #f8fafc;
 }
 
 .presentation-chamados-grid {
@@ -2936,12 +3057,13 @@ textarea.field-input {
 }
 
 .presentation-chamados-group {
-  @apply overflow-hidden rounded-lg border bg-white;
+  @apply overflow-hidden rounded-xl border bg-white;
   border-color: var(--brand-border);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
 .presentation-chamados-group h3 {
-  @apply flex items-center gap-2 border-b px-4 py-3 text-[10px] font-bold uppercase tracking-wider;
+  @apply flex items-center gap-2 border-b px-4 py-3 text-[10px] font-bold uppercase tracking-wider md:py-3.5 md:text-xs;
 }
 
 .presentation-chamados-group h3 span {
@@ -2974,26 +3096,52 @@ textarea.field-input {
 }
 
 .presentation-chamado {
-  @apply grid gap-1 rounded-none border-0 px-4 py-3;
+  @apply grid gap-1 rounded-none border-0 px-4 py-3 md:px-5 md:py-3.5;
 }
 
 .presentation-chamado strong {
-  @apply text-sm font-semibold;
+  @apply text-sm font-semibold md:text-base;
   color: #172b47;
 }
 
-.presentation-chamado span {
-  @apply text-xs;
+.presentation-chamado-meta {
+  @apply flex flex-wrap items-center gap-x-2 gap-y-1;
+}
+
+.presentation-chamado-cargo {
+  @apply text-xs md:text-sm;
   color: var(--brand-text-muted);
+}
+
+.presentation-chamado-org {
+  @apply inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide;
+  background: var(--brand-cream-warm);
+  color: var(--brand-navy);
 }
 
 @media (max-width: 900px) {
   .agenda-chamado-editor-row {
-    grid-template-columns: 130px minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: 130px 1fr minmax(0, 1fr) minmax(0, 1fr);
   }
 
   .agenda-chamado-editor-row > div:last-child {
-    @apply col-span-3 justify-end;
+    @apply col-span-4 justify-end;
+  }
+
+  .agenda-anuncio-editor-row {
+    grid-template-columns: 130px 100px minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .agenda-anuncio-editor-row > div:last-child {
+    @apply col-span-4 justify-end;
+  }
+
+  .agenda-autoridade-editor-row {
+    grid-template-columns: 180px minmax(0, 1fr);
+  }
+
+  .agenda-autoridade-editor-row > div:last-child {
+    @apply col-span-2 justify-end;
   }
 }
 
@@ -3010,8 +3158,32 @@ textarea.field-input {
     @apply w-full;
   }
 
+  .agenda-anuncio-editor-row {
+    @apply grid-cols-1 p-3;
+  }
+
+  .agenda-anuncio-editor-row > div:last-child {
+    @apply col-span-1;
+  }
+
+  .agenda-anuncio-editor-row > div:last-child button {
+    @apply w-full;
+  }
+
+  .agenda-autoridade-editor-row {
+    @apply grid-cols-1 p-3;
+  }
+
+  .agenda-autoridade-editor-row > div:last-child {
+    @apply col-span-1;
+  }
+
+  .agenda-autoridade-editor-row > div:last-child button {
+    @apply w-full;
+  }
+
   .presentation-header {
-    @apply px-4 py-5;
+    @apply px-4 py-3;
   }
 
   .presentation-header > div:first-child > div:first-child {

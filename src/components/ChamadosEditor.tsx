@@ -1,7 +1,7 @@
 "use client";
 
 import { AutocompleteInput } from "@/components/AutocompleteInput";
-import { AgendaChamadoInput } from "@/lib/types";
+import { AgendaChamadoInput, ORGANIZACOES_CHAMADO } from "@/lib/types";
 
 interface ChamadosEditorProps {
   value: AgendaChamadoInput[];
@@ -20,7 +20,7 @@ export function ChamadosEditor({ value, onChange }: ChamadosEditorProps) {
   }
 
   function addItem() {
-    onChange([...value, { tipo: "APOIO", pessoa: "", chamado: "" }]);
+    onChange([...value, { tipo: "APOIO", organizacao: "", pessoa: "", chamado: "" }]);
   }
 
   function removeItem(index: number) {
@@ -65,6 +65,27 @@ export function ChamadosEditor({ value, onChange }: ChamadosEditorProps) {
             >
               <option value="APOIO">Apoio</option>
               <option value="DESOBRIGACAO">Desobrigação</option>
+            </select>
+          </div>
+          <div>
+            <label className="field-label">Organização</label>
+            <select
+              value={item.organizacao ?? ""}
+              onChange={(event) =>
+                updateItem(
+                  index,
+                  "organizacao",
+                  event.target.value as AgendaChamadoInput["organizacao"],
+                )
+              }
+              className="field-input field-select w-full"
+            >
+              <option value="">—</option>
+              {ORGANIZACOES_CHAMADO.map((org) => (
+                <option key={org.value} value={org.value}>
+                  {org.label}
+                </option>
+              ))}
             </select>
           </div>
           <AutocompleteInput

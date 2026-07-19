@@ -6,10 +6,21 @@ import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { format, isValid, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { AutocompleteInput } from "@/components/AutocompleteInput";
+import { AnunciosEditor } from "@/components/AnunciosEditor";
+import { AutoridadesEditor } from "@/components/AutoridadesEditor";
 import { ChamadosEditor } from "@/components/ChamadosEditor";
 import { FormSection } from "@/components/FormSection";
-import { RichTextEditor } from "@/components/RichTextEditor";
-import { AgendaInput } from "@/lib/types";
+import { RestrictedSelect } from "@/components/RestrictedSelect";
+import {
+  AgendaInput,
+  DIRIGENTE_OPTIONS,
+  PRESIDENCIA_OPTIONS,
+  parseAnuncios,
+  parseAutoridades,
+  serializeAnuncios,
+  serializeAutoridades,
+} from "@/lib/types";
+import { formatCalendarDate } from "@/lib/date-utils";
 
 interface AgendaFormProps {
   initialData?: Partial<AgendaInput> & { id?: string };
@@ -41,10 +52,8 @@ const emptyForm: AgendaInput = {
   chamados: [],
 };
 
-function countAnnouncements(html: string | undefined) {
-  if (!html?.replace(/<[^>]*>/g, "").trim()) return 0;
-  const listItems = html.match(/<li(?:\s[^>]*)?>/gi)?.length ?? 0;
-  return listItems || 1;
+function countAnnouncements(value: string | undefined) {
+  return parseAnuncios(value).length;
 }
 
 function SaveIndicator({ state }: { state: SaveState }) {
@@ -79,6 +88,8 @@ export function AgendaForm({ initialData }: AgendaFormProps) {
   const lastSavedRef = useRef(JSON.stringify(form));
   const latestQueuedRef = useRef(JSON.stringify(form));
   const saveChainRef = useRef<Promise<void>>(Promise.resolve());
+  const historyRef = useRef<string[]>([]);
+  const [historyCount, setHistoryCount] = useState(0);
 
   const enqueueSave = useCallback((nextForm: AgendaInput, force = false) => {
     const snapshot = JSON.stringify(nextForm);
@@ -120,6 +131,10 @@ export function AgendaForm({ initialData }: AgendaFormProps) {
           );
         }
 
+        if (lastSavedRef.current !== snapshot) {
+          historyRef.current = [...historyRef.current, lastSavedRef.current].slice(-15);
+          setHistoryCount(historyRef.current.length);
+        }
         lastSavedRef.current = snapshot;
         setError(null);
         if (latestQueuedRef.current === snapshot) setSaveState("saved");
@@ -148,6 +163,19 @@ export function AgendaForm({ initialData }: AgendaFormProps) {
   function updateField<K extends keyof AgendaInput>(field: K, value: AgendaInput[K]) {
     setSaveState("pending");
     setForm((current) => ({ ...current, [field]: value }));
+  }
+
+  function handleUndo() {
+    if (historyRef.current.length === 0) return;
+
+    const previousSnapshot = historyRef.current[historyRef.current.length - 1];
+    historyRef.current = historyRef.current.slice(0, -1);
+    setHistoryCount(historyRef.current.length);
+
+    const restored = JSON.parse(previousSnapshot) as AgendaInput;
+    setSaveState("pending");
+    setForm(restored);
+    void enqueueSave(restored);
   }
 
   async function handleSubmit(event: FormEvent) {
@@ -184,9 +212,9 @@ export function AgendaForm({ initialData }: AgendaFormProps) {
     >
       <header className="agenda-editor-header">
         <div className="agenda-editor-date">
-          <span>{format(meetingDate, "EEEE", { locale: ptBR })}</span>
-          <strong>{format(meetingDate, "dd")}</strong>
-          <small>{format(meetingDate, "MMM yyyy", { locale: ptBR })}</small>
+          <span>{formatCalendarDate(meetingDate, "EEEE", { locale: ptBR })}</span>
+          <strong>{formatCalendarDate(meetingDate, "dd")}</strong>
+          <small>{formatCalendarDate(meetingDate, "MMM yyyy", { locale: ptBR })}</small>
         </div>
 
         <div className="agenda-editor-heading">
@@ -200,6 +228,15 @@ export function AgendaForm({ initialData }: AgendaFormProps) {
         </div>
 
         <div className="agenda-editor-actions">
+          <button
+            type="button"
+            onClick={handleUndo}
+            disabled={historyCount === 0}
+            className="agenda-undo-button"
+            title="Desfazer última edição"
+          >
+            <span aria-hidden="true">↺</span> Desfazer
+          </button>
           {agendaId && (
             <Link
               href={`/bispado/agendas-sacramentais/${agendaId}/apresentacao`}
@@ -246,7 +283,7 @@ export function AgendaForm({ initialData }: AgendaFormProps) {
                 className={!isTestimonyMeeting ? "active" : ""}
                 onClick={() => updateField("tipo", "NORMA")}
               >
-                Norma
+                Discursos
               </button>
               <button
                 type="button"
@@ -270,17 +307,47 @@ export function AgendaForm({ initialData }: AgendaFormProps) {
       <div className="agenda-editor-sections">
         <FormSection title="Abertura" subtitle="Presidência, música e reconhecimentos" accent="navy">
           <div className="agenda-field-grid">
-            <AutocompleteInput label="Presidida por" value={form.presididaPor ?? ""} onChange={(value) => updateField("presididaPor", value)} apiPath="/api/pessoas" variant="person" />
-            <AutocompleteInput label="Dirigida por" value={form.dirigidaPor ?? ""} onChange={(value) => updateField("dirigidaPor", value)} apiPath="/api/pessoas" variant="person" />
-            <AutocompleteInput label="Reconhecimento de autoridades" value={form.reconhecimentoAutoridades ?? ""} onChange={(value) => updateField("reconhecimentoAutoridades", value)} apiPath="/api/pessoas" variant="person" />
-            <AutocompleteInput label="Reconhecimento de visitantes ou novos membros" value={form.reconhecimentoVisitantes ?? ""} onChange={(value) => updateField("reconhecimentoVisitantes", value)} apiPath="/api/pessoas" variant="person" />
-            <AutocompleteInput label="Regente" value={form.regente ?? ""} onChange={(value) => updateField("regente", value)} apiPath="/api/pessoas" variant="person" />
-            <AutocompleteInput label="Organista" value={form.organista ?? ""} onChange={(value) => updateField("organista", value)} apiPath="/api/pessoas" variant="person" />
-            <AutocompleteInput label="Hino de abertura" value={form.hinoAbertura ?? ""} onChange={(value) => updateField("hinoAbertura", value)} apiPath="/api/hinos" variant="hymn" />
-            <AutocompleteInput label="1ª Oração" value={form.primeiraOracao ?? ""} onChange={(value) => updateField("primeiraOracao", value)} apiPath="/api/pessoas" variant="person" />
+            <RestrictedSelect
+              label="Presidida por"
+              value={form.presididaPor ?? ""}
+              onChange={(value) => updateField("presididaPor", value)}
+              options={PRESIDENCIA_OPTIONS}
+              allowCustom
+            />
+            <RestrictedSelect
+              label="Dirigida por"
+              value={form.dirigidaPor ?? ""}
+              onChange={(value) => updateField("dirigidaPor", value)}
+              options={DIRIGENTE_OPTIONS}
+            />
+          </div>
+          <div className="mt-5">
+            <AutoridadesEditor
+              value={parseAutoridades(form.reconhecimentoAutoridades)}
+              onChange={(value) => updateField("reconhecimentoAutoridades", serializeAutoridades(value))}
+            />
+          </div>
+          <div className="mt-5">
+            <label className="field-label">Visitantes ou novos membros</label>
+            <textarea
+              value={form.reconhecimentoVisitantes ?? ""}
+              onChange={(event) => updateField("reconhecimentoVisitantes", event.target.value)}
+              placeholder="Nomes dos visitantes ou novos membros"
+              rows={2}
+              className="field-input w-full"
+            />
           </div>
           <div className="agenda-announcements-field">
-            <RichTextEditor label="Anúncios" value={form.anuncios ?? ""} onChange={(value) => updateField("anuncios", value)} />
+            <AnunciosEditor
+              value={parseAnuncios(form.anuncios)}
+              onChange={(value) => updateField("anuncios", serializeAnuncios(value))}
+            />
+          </div>
+          <div className="agenda-field-grid mt-5">
+            <AutocompleteInput label="Regente" value={form.regente ?? ""} onChange={(value) => updateField("regente", value)} apiPath="/api/pessoas" variant="person" />
+            <AutocompleteInput label="Organista" value={form.organista ?? ""} onChange={(value) => updateField("organista", value)} apiPath="/api/pessoas" variant="person" />
+            <AutocompleteInput label="Hino de abertura" value={form.hinoAbertura ?? ""} onChange={(value) => updateField("hinoAbertura", value)} apiPath="/api/hinos" variant="hymn" restrict />
+            <AutocompleteInput label="1ª Oração" value={form.primeiraOracao ?? ""} onChange={(value) => updateField("primeiraOracao", value)} apiPath="/api/pessoas" variant="person" />
           </div>
         </FormSection>
 
@@ -290,7 +357,7 @@ export function AgendaForm({ initialData }: AgendaFormProps) {
 
         <FormSection title="Sacramento" accent="gold">
           <div className="agenda-field-grid agenda-field-grid-narrow">
-            <AutocompleteInput label="Hino sacramental" value={form.hinoSacramental ?? ""} onChange={(value) => updateField("hinoSacramental", value)} apiPath="/api/hinos" variant="hymn" />
+            <AutocompleteInput label="Hino sacramental" value={form.hinoSacramental ?? ""} onChange={(value) => updateField("hinoSacramental", value)} apiPath="/api/hinos" variant="hymn" restrict />
           </div>
         </FormSection>
 
@@ -300,7 +367,7 @@ export function AgendaForm({ initialData }: AgendaFormProps) {
               <AutocompleteInput label="1º Orador(a)" value={form.primeiroOrador ?? ""} onChange={(value) => updateField("primeiroOrador", value)} apiPath="/api/pessoas" variant="person" />
               <AutocompleteInput label="2º Orador(a)" value={form.segundoOrador ?? ""} onChange={(value) => updateField("segundoOrador", value)} apiPath="/api/pessoas" variant="person" />
               <div className="agenda-field-span">
-                <AutocompleteInput label="Hino especial (intervalo)" value={form.hinoEspecial ?? ""} onChange={(value) => updateField("hinoEspecial", value)} apiPath="/api/hinos" variant="hymn" />
+                <AutocompleteInput label="Hino especial (intervalo)" value={form.hinoEspecial ?? ""} onChange={(value) => updateField("hinoEspecial", value)} apiPath="/api/hinos" variant="hymn" restrict />
               </div>
             </div>
           </FormSection>
@@ -311,7 +378,7 @@ export function AgendaForm({ initialData }: AgendaFormProps) {
             {!isTestimonyMeeting && (
               <AutocompleteInput label="Último orador(a)" value={form.ultimoOrador ?? ""} onChange={(value) => updateField("ultimoOrador", value)} apiPath="/api/pessoas" variant="person" />
             )}
-            <AutocompleteInput label="Hino de encerramento" value={form.hinoEncerramento ?? ""} onChange={(value) => updateField("hinoEncerramento", value)} apiPath="/api/hinos" variant="hymn" />
+            <AutocompleteInput label="Hino de encerramento" value={form.hinoEncerramento ?? ""} onChange={(value) => updateField("hinoEncerramento", value)} apiPath="/api/hinos" variant="hymn" restrict />
             <AutocompleteInput label="Oração de encerramento" value={form.oracaoEncerramento ?? ""} onChange={(value) => updateField("oracaoEncerramento", value)} apiPath="/api/pessoas" variant="person" />
           </div>
         </FormSection>

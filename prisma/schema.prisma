@@ -35,6 +35,16 @@ enum TipoMovimentoChamado {
   DESOBRIGACAO
 }
 
+enum OrganizacaoChamado {
+  ELDERES
+  SOCORRO
+  RAPAZES
+  MOCAS
+  ESCOLA_DOMINICAL
+  BISPADO
+  OBRA_MISSIONARIA
+}
+
 model Usuario {
   id           String   @id @default(cuid())
   nome         String
@@ -95,13 +105,14 @@ model Agenda {
 }
 
 model AgendaChamado {
-  id       String @id @default(cuid())
-  agendaId String
-  agenda   Agenda @relation(fields: [agendaId], references: [id], onDelete: Cascade)
-  tipo     TipoMovimentoChamado @default(APOIO)
-  pessoa   String
-  chamado  String
-  ordem    Int    @default(0)
+  id           String @id @default(cuid())
+  agendaId     String
+  agenda       Agenda @relation(fields: [agendaId], references: [id], onDelete: Cascade)
+  tipo         TipoMovimentoChamado @default(APOIO)
+  organizacao  OrganizacaoChamado?
+  pessoa       String
+  chamado      String
+  ordem        Int    @default(0)
 }
 
 model Aviso {

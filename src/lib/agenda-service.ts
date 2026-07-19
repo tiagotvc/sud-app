@@ -3,7 +3,13 @@ import {
   AgendaInput,
   CAMPOS_HINO,
   CAMPOS_PESSOA,
+  cleanAnuncios,
+  cleanAutoridades,
+  parseAnuncios,
+  parseAutoridades,
   parseHino,
+  serializeAnuncios,
+  serializeAutoridades,
 } from "@/lib/types";
 
 async function upsertPessoa(nome: string) {
@@ -43,26 +49,28 @@ async function upsertChamado(titulo: string) {
 }
 
 export async function syncMasterData(input: AgendaInput) {
+  const tasks: Promise<void>[] = [];
+
   for (const campo of CAMPOS_PESSOA) {
     const value = input[campo];
     if (typeof value === "string") {
-      await upsertPessoa(value);
+      tasks.push(upsertPessoa(value));
     }
   }
 
   for (const campo of CAMPOS_HINO) {
     const value = input[campo];
     if (typeof value === "string") {
-      await upsertHino(value);
+      tasks.push(upsertHino(value));
     }
   }
 
-  if (input.chamados) {
-    for (const item of input.chamados) {
-      await upsertPessoa(item.pessoa);
-      await upsertChamado(item.chamado);
-    }
+  for (const item of input.chamados ?? []) {
+    tasks.push(upsertPessoa(item.pessoa));
+    tasks.push(upsertChamado(item.chamado));
   }
+
+  await Promise.all(tasks);
 }
 
 export function buildAgendaData(input: AgendaInput) {
@@ -76,9 +84,10 @@ export function buildAgendaData(input: AgendaInput) {
     frequencia: input.frequencia ?? null,
     presididaPor: input.presididaPor?.trim() || null,
     dirigidaPor: input.dirigidaPor?.trim() || null,
-    reconhecimentoAutoridades: input.reconhecimentoAutoridades?.trim() || null,
+    reconhecimentoAutoridades:
+      serializeAutoridades(cleanAutoridades(parseAutoridades(input.reconhecimentoAutoridades))) || null,
     reconhecimentoVisitantes: input.reconhecimentoVisitantes?.trim() || null,
-    anuncios: input.anuncios || null,
+    anuncios: serializeAnuncios(cleanAnuncios(parseAnuncios(input.anuncios))) || null,
     regente: input.regente?.trim() || null,
     organista: input.organista?.trim() || null,
     hinoAbertura: input.hinoAbertura?.trim() || null,
@@ -98,6 +107,7 @@ export function buildChamadosData(chamados: AgendaInput["chamados"]) {
     .filter((item) => item.pessoa.trim() || item.chamado.trim())
     .map((item, index) => ({
       tipo: item.tipo === "DESOBRIGACAO" ? "DESOBRIGACAO" as const : "APOIO" as const,
+      organizacao: item.organizacao || null,
       pessoa: item.pessoa.trim(),
       chamado: item.chamado.trim(),
       ordem: index,

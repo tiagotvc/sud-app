@@ -54,6 +54,7 @@ export default async function AgendaApresentacaoPage({ params }: PageProps) {
         oracaoEncerramento: agenda.oracaoEncerramento,
         chamados: agenda.chamados.map((c) => ({
           tipo: c.tipo,
+          organizacao: c.organizacao,
           pessoa: c.pessoa,
           chamado: c.chamado,
         })),
